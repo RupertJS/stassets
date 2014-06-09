@@ -14,6 +14,10 @@ loadFixture = (fixture)->
     ).toString('utf-8').replace(/\n$/m, '')
 
 describe "DS Asset Middleware", ->
+    before (done)->
+        # Let the watchers compile
+        setTimeout done, 50
+
     describe "Index", ->
         it 'renders jade to html', (done)->
             request(app)
@@ -30,9 +34,9 @@ describe "DS Asset Middleware", ->
         it 'renders jade to JS', (done)->
             request(app)
             .get('/templates.js')
-            .set('Accept', 'application/js')
+            .set('Accept', 'application/javascript')
             .expect(200)
-            .expect('Content-Type', 'text/html; charset=utf-8')
+            .expect('Content-Type', 'application/javascript; charset=utf-8')
             .expect(loadFixture('templates.js'))
             .end(done)
 
@@ -44,7 +48,14 @@ describe "DS Asset Middleware", ->
         it 'renders all, screen, and print', ->
 
     describe "Application", ->
-        it 'loads application code', ->
+        it 'loads application code', (done)->
+            request(app)
+            .get('/application.js')
+            .set('Accept', 'application/javascript')
+            .expect(200)
+            .expect('Content-Type', 'application/javascript; charset=utf-8')
+            .expect(loadFixture('application.js'))
+            .end(done)
 
         it 'ignores test code', ->
 
