@@ -1,8 +1,27 @@
+debounce = require 'debounce'
 fs = require 'fs'
 Path = require 'path'
+sha1 = require 'sha1'
 
 jade = require 'jade'
 glob = require 'glob'
+
+class AssetWatcher
+    constructor: ->
+        @filelist = {}
+        @gaze = new Gaze @pattern
+        @gaze.on 'all', (_)=> @add _
+
+    add: (filepath)->
+        @filelist[filepath] = yes
+
+    compile: ->
+
+
+    hash: ->
+        sha1 @contents
+
+class
 
 # Normalize backslashes and strip newlines.
 escapeContent = (content)->
