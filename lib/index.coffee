@@ -49,7 +49,7 @@ class AssetWatcher
         delete @filelist[filepath]
         @compile()
 
-    type: -> "application/javascript; charset=utf-8"
+    type: -> "application/javascript"
 
     handle: (req, res, next)->
         res.status(200).set('Content-Type', @type()).send(@content)
@@ -118,15 +118,57 @@ class ScriptWatcher extends AssetWatcher
                 filename: path
                 literate: no
             code = fs.readFileSync(path).toString('utf-8')
-            require('coffee-script').compile(code, options)
-        console.log "Compiling #{Object.keys(@filelist)}"
+            require('coffee-script').compile(code, options).replace(/\n/gm, '')
         @content = Object.keys(@filelist).map(render).join('\n')
+
+class StyleWatcher extends AssetWatcher
+    constructor: ->
+        @pattern = ["#{@config.root}/**/#{@name}.styl"]
+        super()
+
+    type: -> "text/css"
+    matches: (path)-> path is "/#{@name}.css"
+
+    compile: ->
+        render = (path)=>
+            d = q.defer()
+            require('stylus')(fs.readFileSync(path).toString('utf-8'))
+                .set('filename', path)
+                .use(require('nib')())
+                .import('nib')
+                .render (err, css)=>
+                    if err
+                        d.reject err
+                    else
+                        d.resolve css
+            d.promise
+        q.all(Object.keys(@filelist).map(render))
+        .then (css...)=>
+            @content = css.join '\n'
+
+class AllStyleWatcher extends StyleWatcher
+    constructor: (@config)->
+        @name = 'all'
+        super()
+
+class ScreenStyleWatcher extends StyleWatcher
+    constructor: (@config)->
+        @name = 'screen'
+        super()
+
+class PrintStyleWatcher extends StyleWatcher
+    constructor: (@config)->
+        @name = 'print'
+        super()
+
+stripNewlines = (content)->
+    content.replace(/\r?\n/g, '\\n\' +\n    \'')
 
 # Normalize backslashes and strip newlines.
 escapeContent = (content)->
-    content
-    .replace(/\\/g, '\\\\').replace(/'/g, '\\\'')
-    .replace(/\r?\n/g, '\\n\' +\n    \'')
+    stripNewlines(content)
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, '\\\'')
 
 class Stassets
     constructor: (@config)->
@@ -139,6 +181,9 @@ class Stassets
             IndexWatcher
             TemplateWatcher
             ScriptWatcher
+            AllStyleWatcher
+            PrintStyleWatcher
+            ScreenStyleWatcher
         ].map (Ctor)=>
             new Ctor @config
 

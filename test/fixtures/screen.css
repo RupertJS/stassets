@@ -1,0 +1,14 @@
+.nav ._tab {
+  background: -webkit-linear-gradient(top, #fff, #000);
+  background: -moz-linear-gradient(top, #fff, #000);
+  background: -o-linear-gradient(top, #fff, #000);
+  background: -ms-linear-gradient(top, #fff, #000);
+  background: linear-gradient(to bottom, #fff, #000);
+}
+.nav ._tab.-active {
+  background: -webkit-linear-gradient(bottom, #fff, #000);
+  background: -moz-linear-gradient(bottom, #fff, #000);
+  background: -o-linear-gradient(bottom, #fff, #000);
+  background: -ms-linear-gradient(bottom, #fff, #000);
+  background: linear-gradient(to top, #fff, #000);
+}

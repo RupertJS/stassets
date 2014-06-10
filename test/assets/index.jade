@@ -1,5 +1,16 @@
 doctype html
-html
+html(ng-app="stassets.main")
     head
         title Test Fixture
+
+        link(rel="stylesheet", href="vendors.css")
+
+        link(rel="stylesheet", href="all.css")
+        link(rel="stylesheet", href="screen.css", media="screen")
+        link(rel="stylesheet", href="print.css", media="print")
 body
+    main
+
+    script(src="vendors.js")
+    script(src="templates.js")
+    script(src="application.js")

@@ -11,7 +11,7 @@ app.use(stasset({root: "#{__dirname}/../test/assets"}))
 loadFixture = (fixture)->
     fs.readFileSync(
         "#{__dirname}/../test/fixtures/#{fixture}"
-    ).toString('utf-8').replace(/\n$/m, '')
+    ).toString('utf-8')
 
 describe "DS Asset Middleware", ->
     before (done)->
@@ -24,7 +24,7 @@ describe "DS Asset Middleware", ->
             .get('/index.html')
             .set('Accept', 'text/html')
             .expect(200)
-            .expect('Content-Type', 'text/html; charset=utf-8')
+            .expect('Content-Type', /html; charset=utf-8/)
             .expect(loadFixture('index.html'))
             .end(done)
 
@@ -36,16 +36,34 @@ describe "DS Asset Middleware", ->
             .get('/templates.js')
             .set('Accept', 'application/javascript')
             .expect(200)
-            .expect('Content-Type', 'application/javascript; charset=utf-8')
+            .expect('Content-Type', /javascript/)
             .expect(loadFixture('templates.js'))
             .end(done)
 
         it 'inserts into correct modules', ->
 
     describe "App Styles", ->
-        it 'renders Stylus with Nib', ->
+        it 'renders Stylus with Nib', (done)->
+            request(app)
+            .get('/screen.css')
+            .expect(200).expect('Content-Type', /css/)
+            .expect(loadFixture('screen.css'))
+            .end(done)
 
-        it 'renders all, screen, and print', ->
+        it 'renders all', (done)->
+            request(app)
+            .get('/all.css')
+            .expect(200).expect('Content-Type', /css/)
+            .expect(loadFixture('all.css'))
+            .end(done)
+
+        it 'renders print', (done)->
+            request(app)
+            .get('/print.css')
+            .expect(200).expect('Content-Type', /css/)
+            .expect(loadFixture('print.css'))
+            .end(done)
+
 
     describe "Application", ->
         it 'loads application code', (done)->
@@ -53,7 +71,7 @@ describe "DS Asset Middleware", ->
             .get('/application.js')
             .set('Accept', 'application/javascript')
             .expect(200)
-            .expect('Content-Type', 'application/javascript; charset=utf-8')
+            .expect('Content-Type', /javascript/)
             .expect(loadFixture('application.js'))
             .end(done)
 
