@@ -78,5 +78,19 @@ describe "DS Asset Middleware", ->
         it 'ignores test code', ->
 
     describe "Vendors", ->
+        it 'loads the vendors js', (done)->
+            request(app)
+            .get('/vendors.js')
+            .set('Accept', 'application/javascript')
+            .expect(200)
+            .expect('Content-Type', /javascript/)
+            # .expect(loadFixture('vendors.js'))
+            .end(done)
 
     describe "Vendor Styles", ->
+        it 'loads a joined stylesheet', (done)->
+            request(app)
+            .get('/vendors.css')
+            .expect(200).expect('Content-Type', /css/)
+            # .expect(loadFixture('vendors.css'))
+            .end(done)

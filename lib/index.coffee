@@ -14,6 +14,8 @@ class Stassets
         @config.root = Path.normalize @config.root
 
         @watchers = [
+            "Vendor/Script"
+            "Vendor/Style"
             "Template"
             "Script"
             "Style/All"
@@ -32,6 +34,10 @@ class Stassets
 
 Stassets.DEFAULTS =
     root: '.'
+    vendors:
+        prefix: "#{__dirname}/../bower_components"
+        js: [ 'angular/angular.js' ]
+        css: [ 'bootstrap/dist/css/*' ]
 
 module.exports = (config)->
     stassets = new Stassets(config)

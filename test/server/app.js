@@ -4,5 +4,12 @@ var stasset = require('../../lib/index')
 
 var app = express();
 
-app.use(stasset({root: __dirname + "/../assets"}));
+app.use(stasset({
+    root: __dirname + "/../assets"
+    vendors: {
+        prefix: __dirname + "/../../bower_components",
+        js: [ 'angular/angular.js' ],
+        css: [ 'bootstrap/dist/css/*' ]
+    }
+}));
 app.listen(8989);
