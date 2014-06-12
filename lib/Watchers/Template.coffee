@@ -17,26 +17,19 @@ class TemplateWatcher extends AssetWatcher
 
     matches: (path)-> path in ['/templates.js', "/templates-#{@hash()}.js"]
 
-    compile: ->
-        render = (path)=>
-            shortPath = path
-                .replace(@config.root + '/', '')
-                .replace('.jade', '')
-            module = shortPath.replace /\//g, '.'
-            templatePath = shortPath.replace('/template', '')
-            options =
-                filename: path
-            code = fs.readFileSync(path).toString('utf-8')
-            content = require('jade').render(code, options)
-            """
-            angular.module('#{module}', [])
-            .run(function($templateCache){
-                $templateCache.put('#{shortPath}', '#{escapeContent(content)}');
-            });
-            """
-        try
-            @content = Object.keys(@filelist).map(render).join('\n')
-        catch e
-            console.log e
+    render: (code, path)->
+        shortPath = path
+            .replace(@config.root + '/', '')
+            .replace('.jade', '')
+        module = shortPath.replace /\//g, '.'
+        options =
+            filename: path
+        content = require('jade').render(code, options)
+        """
+        angular.module('#{module}', [])
+        .run(function($templateCache){
+            $templateCache.put('#{shortPath}', '#{escapeContent(content)}');
+        });
+        """
 
 module.exports = TemplateWatcher

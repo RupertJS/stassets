@@ -9,11 +9,7 @@ class IndexWatcher extends AssetWatcher
     matches: (path)-> path in ['/', '/index.html']
     type: -> "text/html; charset=utf-8"
 
-    compile: ->
-        return @content = '' if Object.keys(@filelist).length  < 1
-        fs.readFile Object.keys(@filelist)[0], (err, content)=>
-            return if err
-            @content = require('jade').render content,
-                filename: "#{@config.root}/index.jade"
+    render: (_, filename)->
+        require('jade').render _, {filename}
 
 module.exports = IndexWatcher

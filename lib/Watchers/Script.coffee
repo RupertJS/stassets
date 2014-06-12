@@ -13,15 +13,12 @@ class ScriptWatcher extends AssetWatcher
         ].map (_)=> "#{@config.root}/**/#{_}.coffee"
         super()
 
-    matches: (path)=> path is '/application.js'
+    matches: (path)=> path in ['/app.js', '/application.js']
 
-    compile: ->
-        render = (path)=>
-            options =
-                filename: path
-                literate: no
-            code = fs.readFileSync(path).toString('utf-8')
-            require('coffee-script').compile(code, options).replace(/\n/gm, '')
-        @content = Object.keys(@filelist).map(render).join('\n')
+    render: (code, path)->
+        options =
+            filename: path
+            literate: no
+        require('coffee-script').compile(code, options).replace(/\n/gm, '')
 
 module.exports = ScriptWatcher

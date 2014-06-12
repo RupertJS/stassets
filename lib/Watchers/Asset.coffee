@@ -1,11 +1,26 @@
-fs = require 'fs'
 Path = require 'path'
+fs = require 'fs'
+Q = require 'q'
+
+readFile = Q.denodeify fs.readFile
+# stat = Q.denodeify fs.stat
+
 sha1 = require 'sha1'
 
 Gaze = require('gaze').Gaze
 minimatch = require 'minimatch' # TODO Remove after
                                 # https://github.com/shama/gaze/issues/104
                                 # gets resolved
+
+class Loader
+    constructor: (@path, watcher)->
+        defer = Q.defer()
+        @promise = defer.promise
+        encoding = watcher.encoding()
+        readFile(@path, {encoding}).then(
+            ((@code)=> defer.resolve([@code, @])),
+            ((@err)=> defer.reject([@err, @]))
+        )
 
 class AssetWatcher
     constructor: ->
@@ -38,13 +53,15 @@ class AssetWatcher
         @gaze.on 'changed', (_)=> @compile()
 
     add: (filepath)->
-        @filelist[filepath] = yes
-        @compile()
+        if fs.statSync(filepath).isFile()
+            @filelist[filepath] = yes
+            @compile()
 
     remove: (filepath)->
-        @filelist[filepath] = yes
-        delete @filelist[filepath]
-        @compile()
+        if fs.statSync(filepath).isFile()
+            @filelist[filepath] = no
+            delete @filelist[filepath]
+            @compile()
 
     type: -> "application/javascript"
 
@@ -53,5 +70,45 @@ class AssetWatcher
 
     hash: ->
         sha1 @content
+
+    encoding: -> 'utf-8'
+
+    ###
+    The compile function orchestrates the load / render / concat loop.
+    Unsurprisingly, there are three links in the promise chain. The first builds
+    an array of `Loader`s, one for each file to load. The `Loader` does the fs
+    to the source file, and resolves with that code and a reference to itself
+    (for metadata). The second passes each `Loader`'s source to a subclass'
+    `render` function, which can return either the rendered file, or a promise
+    for the render. Finally, the list of render promises are joined and passed
+    to the concatenator. The result of that step is the value assigned to
+    `this.content`.
+    ###
+    compile: ->
+        filenames = Object.keys(@filelist)
+        console.log "Compiling #{filenames}..."
+        readMap = filenames.map (_)=> (new Loader(_, @)).promise
+
+        renderMap = readMap.map (_)=>
+            d = Q.defer()
+            _.then ([__, loader])=>
+                try
+                    d.resolve @render __, loader.path
+                catch err
+                    d.reject err
+            _.catch ([__, loader])=>
+                console.error "Could not read #{loader.path}; error was", __
+                d.reject __
+            d.promise
+
+        Q.all(renderMap)
+        .catch (__)=>
+            console.error "Could not render #{@constructor.name}; error was", __
+            Q.reject __
+        .then (_)=> Q @concat _
+        .done (_)=> @content = _
+
+    render: (_, path)-> _
+    concat: (_)-> _.join('\n')
 
 module.exports = AssetWatcher
