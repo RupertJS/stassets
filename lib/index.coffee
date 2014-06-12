@@ -1,4 +1,3 @@
-debounce = require 'debounce'
 fs = require 'fs'
 Path = require 'path'
 sha1 = require 'sha1'

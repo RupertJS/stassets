@@ -86,7 +86,9 @@ class AssetWatcher
     ###
     compile: ->
         filenames = Object.keys(@filelist)
-        console.log "Compiling #{filenames}..."
+
+        # console.log "Compiling #{filenames}..."
+
         readMap = filenames.map (_)=> (new Loader(_, @)).promise
 
         renderMap = readMap.map (_)=>

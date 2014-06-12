@@ -1,10 +1,10 @@
 {
   "name": "stassets",
   "version": "0.0.0",
-  "description": "Static angular compiling express middleware.",
+  "repository": "https://github.com/DavidSouther/stassets.git",
+  "description": "Static compiling express middleware.",
   "main": "lib/index.js",
   "dependencies": {
-    "debounce": "0.0.3",
     "gaze": "^0.6.4",
     "glob": "^4.0.2",
     "jade": "^1.3.1",
@@ -24,7 +24,7 @@
     "supertest": "^0.13.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "grunt server"
   },
   "author": "David Souther <david.souther+stassets@gmail.com>",
   "license": "ISC"
