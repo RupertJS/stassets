@@ -28,7 +28,7 @@ project into
 
 And with a basic `index.jade` looking like
 
-```
+```jade
 doctype html
 html(ng-app="stassets.main")
     head
@@ -54,7 +54,7 @@ your project is 7 files.
 stassets is built as an express middleware. With the default project layout,
 the easiest server looks like this:
 
-```
+```javascript
 var express = require('express')
 var app = express();
 
@@ -90,7 +90,8 @@ You need to work logically.
 
 Group your code by component. It looks like this:
 
-```.
+```
+.
 ├── Gruntfile.coffee
 ├── index.jade
 ├── main
