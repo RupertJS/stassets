@@ -1,6 +1,6 @@
 {
   "name": "stassets",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "repository": "https://github.com/DavidSouther/stassets.git",
   "description": "Static compiling express middleware.",
   "main": "lib/index.js",
@@ -20,6 +20,7 @@
     "grunt": "^0.4.5",
     "grunt-mocha-test": "^0.11.0",
     "grunt-recurse": "^0.2.1",
+    "grunt-release": "^0.7.0",
     "load-grunt-tasks": "^0.2.1",
     "supertest": "^0.13.0"
   },
