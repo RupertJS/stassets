@@ -22,13 +22,34 @@ class Loader
             ((@err)=> defer.reject([@err, @]))
         )
 
-class AssetWatcher
+class Logger
+    logString: (_)->
+        "#{(new Date()).toISOString()} #{@constructor.name}:: #{_}"
+    log: (_)-> console.log @logString _
+    err: (_)-> console.error @logString _
+    printStart: (loader)->
+        return unless @config.verbose
+        @log "Rendering: #{loader.path}"
+    printError: (where, message)->
+        return unless @config.verbose
+        @err "Could not #{where}: #{message}"
+    printSuccess: ->
+        return unless @config.verbose
+        @log "Finished building asset"
+
+class AssetWatcher extends Logger
     constructor: ->
         @content = ""
         @filelist = {}
 
         unless @pattern? and @pattern instanceof Array
             throw new Error "No sane pattern, have #{@pattern}"
+
+        watch = (filepath)=> # TODO Remove [shama/gaze/issues/104]
+            for pattern in @pattern
+                if minimatch filepath, pattern
+                    return true
+            false
 
         @gaze = new Gaze @pattern
 
@@ -39,18 +60,14 @@ class AssetWatcher
                 return console.log err if err
                 for _, files of matched
                     files
-                    .filter (filepath)=> # TODO Remove [shama/gaze/issues/104]
-                        for pattern in @pattern
-                            if minimatch filepath, pattern
-                                return true
-                        false
+                    .filter watch
                     .forEach (filepath)=>
                         if fs.statSync(filepath).isFile()
                             @filelist[filepath] = yes
                 @compile()
-        @gaze.on 'added', (_)=> @add _
-        @gaze.on 'deleted', (_) => @remove _
-        @gaze.on 'changed', (_)=> @compile()
+        @gaze.on 'added', (_)=> @add _ if watch _
+        @gaze.on 'deleted', (_) => @remove _ if watch _
+        @gaze.on 'changed', (_)=> @compile() if watch _
 
     add: (filepath)->
         if fs.statSync(filepath).isFile()
@@ -95,22 +112,27 @@ class AssetWatcher
             d = Q.defer()
             _.then ([__, loader])=>
                 try
+                    @printStart loader
                     d.resolve @render __, loader.path
                 catch err
                     d.reject err
             _.catch ([__, loader])=>
-                console.error "Could not read #{loader.path}; error was", __
-                d.reject __
+                @printError "read `#{loader.path}`", @formatReadError __
+                Q ''
             d.promise
-
         Q.all(renderMap)
         .catch (__)=>
-            console.error "Could not render #{@constructor.name}; error was", __
-            Q.reject __
+            @printError 'render', @formatRenderError __
+            Q ''
         .then (_)=> Q @concat _
-        .done (_)=> @content = _
+        .done ((_)=> @printSuccess() ; @content = _), (__)=>
+            @printError 'concat', @formatConcatError __
 
     render: (_, path)-> _
     concat: (_)-> _.join('\n')
+
+    formatReadError: (error, loader)-> error
+    formatRenderError: (error, loader)-> error
+    formatConcatError: (error)-> error
 
 module.exports = AssetWatcher

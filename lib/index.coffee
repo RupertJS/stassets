@@ -32,6 +32,7 @@ class Stassets
         next()
 
 Stassets.DEFAULTS =
+    verbose: no
     root: '.'
     vendors:
         prefix: "#{__dirname}/../bower_components"
