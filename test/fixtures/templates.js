@@ -1,8 +1,8 @@
-angular.module('main.template', [])
+angular.module('main', [])
 .run(function($templateCache){
-    $templateCache.put('main/template', '<div class="main"></div>');
+    $templateCache.put('main', '<div class="main"></div>');
 });
-angular.module('main.nav.template', [])
+angular.module('main.nav', [])
 .run(function($templateCache){
-    $templateCache.put('main/nav/template', '<nav role="navigation"></nav>');
+    $templateCache.put('main/nav', '<nav role="navigation"></nav>');
 });
