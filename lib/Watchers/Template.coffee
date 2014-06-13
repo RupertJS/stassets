@@ -20,8 +20,9 @@ class TemplateWatcher extends AssetWatcher
     render: (code, path)->
         shortPath = path
             .replace(@config.root + '/', '')
-            .replace('/template.jade', '')
+            .replace('.jade', '')
         module = shortPath.replace /\//g, '.'
+        shortPath = shortPath.replace '/template', ''
         options =
             filename: path
         content = require('jade').render(code, options)
