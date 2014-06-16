@@ -19,14 +19,8 @@ module.exports = (grunt)->
                 options:
                     reporter: 'spec'
                 src: testFiles
-        # copy:
-        #     server:
-        #         files: [
-        #             expand: true
-        #             cwd: 'src/server'
-        #             src: ['**/*', '!**/*test*']
-        #             dest: 'build/server'
-        #         ]
+        stassets:
+            build: {}
         watch:
             server:
                 files: testFiles
@@ -42,5 +36,9 @@ module.exports = (grunt)->
         'testServer'
         # 'copy:server'
     ]
+
+    grunt.registerTask 'default', ['server']
+
+    grunt.loadTasks './tasks'
 
     grunt.finalize()

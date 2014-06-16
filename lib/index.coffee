@@ -1,7 +1,7 @@
 fs = require 'fs'
 Path = require 'path'
 sha1 = require 'sha1'
-q = require 'q'
+Q = require 'q'
 
 glob = require 'glob'
 
@@ -25,6 +25,8 @@ class Stassets
             Ctor = require("./Watchers/#{watcher}")
             new Ctor @config
 
+        @promise = Q.all(@watchers.map (_)->_.promise)
+
     handle: (req, res, next)->
         for watcher in @watchers
             if watcher.matches req.path
@@ -39,7 +41,11 @@ Stassets.DEFAULTS =
         js: [ 'angular/angular.js' ]
         css: [ 'bootstrap/dist/css/*' ]
 
-module.exports = (config)->
+middleware = (config)->
     stassets = new Stassets(config)
     (req, res, next)->
         stassets.handle(req, res, next)
+
+middleware.Stassets = Stassets
+
+module.exports = middleware

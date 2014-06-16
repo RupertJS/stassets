@@ -3,7 +3,6 @@ fs = require 'fs'
 Q = require 'q'
 
 readFile = Q.denodeify fs.readFile
-# stat = Q.denodeify fs.stat
 
 sha1 = require 'sha1'
 
@@ -39,6 +38,8 @@ class Logger
 
 class AssetWatcher extends Logger
     constructor: ->
+        @_defer = Q.defer()
+        @promise = @_defer.promise
         @content = ""
         @filelist = {}
 
@@ -60,7 +61,7 @@ class AssetWatcher extends Logger
                 return console.log err if err
                 for _, files of matched
                     files
-                    .filter watch
+                    .filter(watch)
                     .forEach (filepath)=>
                         if fs.statSync(filepath).isFile()
                             @filelist[filepath] = yes
@@ -124,12 +125,20 @@ class AssetWatcher extends Logger
         .catch (__)=>
             @printError 'render', @formatRenderError __
             Q ''
-        .then (_)=> Q @concat _
-        .done ((_)=> @printSuccess() ; @content = _), (__)=>
+        .then((_)=> Q @concat _)
+        .catch (__)=>
             @printError 'concat', @formatConcatError __
+        .then((_)=> @finish(_))
+        .done()
+
+        @
 
     render: (_, path)-> _
     concat: (_)-> _.join('\n')
+    finish: (_)->
+        @printSuccess()
+        @content = _
+        @_defer.resolve()
 
     formatReadError: (error, loader)-> error
     formatRenderError: (error, loader)-> error
