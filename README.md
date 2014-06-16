@@ -204,5 +204,8 @@ layout.
 
 ## Changelog
 
-**0.1** *2014-06-12* Understands the basic project structure. Works great for
+* **0.1.4** *2014-06-16** Includes Grunt task to save compiled assets to disk, for
+pure static server (also great for tests). *This is likely to move to
+grunt-stassets in the very near future!*
+* **0.1** *2014-06-12* Understands the basic project structure. Works great for
 rapid development.
