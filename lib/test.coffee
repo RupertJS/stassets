@@ -77,6 +77,13 @@ describe "DS Asset Middleware", ->
 
         it 'ignores test code', ->
 
+        it 'generates a source map', (done)->
+            request(app)
+            .get('/application.js.map')
+            .expect(200)
+            .expect(loadFixture('application.js.map'))
+            .end(done)
+
     describe "Vendors", ->
         it 'loads the vendors js', (done)->
             request(app)

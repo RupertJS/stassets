@@ -1,7 +1,7 @@
 fs = require 'fs'
-AssetWatcher = require './Asset'
+SourcemapWatcher = require './Sourcemap'
 
-class ScriptWatcher extends AssetWatcher
+class ScriptWatcher extends SourcemapWatcher
     constructor: (@config)->
         @pattern = [
             'main'
@@ -11,14 +11,21 @@ class ScriptWatcher extends AssetWatcher
             'filter'
             'provider'
         ].map (_)=> "#{@config.root}/**/#{_}.coffee"
+        @files = ['/app.js', '/application.js']
         super()
-
-    matches: (path)=> path in ['/app.js', '/application.js']
 
     render: (code, path)->
         options =
             filename: path
             literate: no
-        require('coffee-script').compile(code, options).replace(/\n/gm, '')
+            sourceMap: yes
+            sourceRoot: ''
+            sourceFiles: [path.replace "#{@config.root}/", '']
+
+        build = require('coffee-script').compile(code, options)
+        content = build.js.replace(/\n/gm, '')
+        sourceMap = JSON.parse build.v3SourceMap
+        sourceMap.sourcesContent = code
+        {content, sourceMap}
 
 module.exports = ScriptWatcher
