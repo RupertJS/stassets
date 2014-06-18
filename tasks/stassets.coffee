@@ -13,7 +13,7 @@ module.exports = (grunt)->
             done = @async()
             options = @options
                 stassets:
-                    verbose: no // TODO Tie to Grunt
+                    verbose: grunt.option('verbose')
                     root: Path.resolve './test/assets'
                     vendors:
                         prefix: Path.resolve './bower_components'
@@ -44,7 +44,6 @@ module.exports = (grunt)->
                 grunt.verbose.writeln "Starting request for #{file}..."
                 request(app).get("/#{file}")
                 .end (err, res)->
-                    grunt.verbose.writeln "Finished request for #{file}..."
                     defer.reject err if err
                     defer.reject res if res.status isnt 200
                     grunt.file.write "#{options.dest}/#{file}", res.text
