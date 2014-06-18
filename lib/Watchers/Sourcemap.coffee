@@ -12,7 +12,7 @@ class SourcemapWatcher extends AssetWatcher
         if req.path.substr(-4) is '.map'
             res.send(@map)
         else
-            res.send(@content)
+            res.set('X-SourceMap', req.path + '.map').send(@content)
 
     hash: -> sha1 @content
     matches: (path)=>

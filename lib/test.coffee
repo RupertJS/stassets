@@ -76,10 +76,18 @@ describe "DS Asset Middleware", ->
             .end(done)
 
         it 'ignores test code', ->
+            # Not directly tested, as the loadFixture above would fail.
+
+        it 'references a sourcemap', (done)->
+            request(app)
+            .get('/app.js')
+            .expect(200)
+            .expect('X-SourceMap', '/app.js.map')
+            .end(done)
 
         it 'generates a source map', (done)->
             request(app)
-            .get('/application.js.map')
+            .get('/app.js.map')
             .expect(200)
             .expect(loadFixture('application.js.map'))
             .end(done)

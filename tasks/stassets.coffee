@@ -23,6 +23,7 @@ module.exports = (grunt)->
                 files: [
                     'index.html'
                     'application.js'
+                    'application.js.map'
                     'templates.js'
                     'vendors.js'
                     'vendors.css'
