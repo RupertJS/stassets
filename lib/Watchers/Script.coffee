@@ -23,9 +23,9 @@ class ScriptWatcher extends SourcemapWatcher
             sourceFiles: [path.replace "#{@config.root}/", '']
 
         build = require('coffee-script').compile(code, options)
-        content = build.js.replace(/\n/gm, '')
+        content = build.js#.replace(/\n/gm, '')
         sourceMap = JSON.parse build.v3SourceMap
-        sourceMap.sourcesContent = code
+        sourceMap.sourcesContent = [code]
         {content, sourceMap}
 
 module.exports = ScriptWatcher

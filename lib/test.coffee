@@ -82,7 +82,7 @@ describe "DS Asset Middleware", ->
             request(app)
             .get('/app.js')
             .expect(200)
-            .expect('X-SourceMap', '/app.js.map')
+            .expect('SourceMap', '/app.js.map')
             .end(done)
 
         it 'generates a source map', (done)->
