@@ -5,6 +5,7 @@ var stasset = require('../../lib/index')
 var app = express();
 
 app.use(stasset({
+    verbose: true,
     root: __dirname + "/../assets",
     vendors: {
         prefix: __dirname + "/../../bower_components",

@@ -1,20 +1,37 @@
 fs = require 'fs'
 SourcemapWatcher = require './Sourcemap'
+Generator = require('source-map').SourceMapGenerator
+SourceNode = require('source-map').SourceNode
 
 class ScriptWatcher extends SourcemapWatcher
     constructor: (@config)->
-        @pattern = [
+        types = @config.types || [
             'main'
             'directive'
             'service'
             'controller'
             'filter'
             'provider'
-        ].map (_)=> "#{@config.root}/**/#{_}.coffee"
+        ].concat @config.additionalTypes
+
+        prefix = (ext)=> (_)=> "#{@config.root}/**/#{_}.#{ext}"
+        @pattern = types.map(prefix('js')).concat(types.map(prefix('coffee')))
         @files = ['/app.js', '/application.js']
         super()
 
     render: (code, path)->
+        extension = path.substr(path.lastIndexOf('.') + 1)
+        ScriptWatcher.renderers[extension].call(this, code, path)
+
+ScriptWatcher.renderers =
+    js: (content, path)->
+        sourceNode = new SourceNode 1, 0, path.replace "#{@config.root}/", ''
+        sourceNode.add content.split '\n'
+        sourceMap = sourceNode.toStringWithSourceMap().map.toJSON()
+        sourceMap.sourcesContent = [content]
+        {content, sourceMap}
+
+    coffee: (code, path)->
         options =
             filename: path
             literate: no
