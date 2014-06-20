@@ -24,16 +24,17 @@ class Loader
 class Logger
     logString: (_)->
         "#{(new Date()).toISOString()} #{@constructor.name}:: #{_}"
-    log: (_)-> console.log @logString _
-    err: (_)-> console.error @logString _
-    printStart: (loader)->
+    log: (_)->
         return unless @config.verbose
+        console.log @logString _
+    err: (_)->
+        return unless @config.verbose
+        console.error @logString _
+    printStart: (loader)->
         @log "Rendering: #{loader.path}"
     printError: (where, message)->
-        return unless @config.verbose
         @err "Could not #{where}: #{message}"
     printSuccess: ->
-        return unless @config.verbose
         @log "Finished building asset"
 
 class AssetWatcher extends Logger

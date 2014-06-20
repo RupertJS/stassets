@@ -3,6 +3,8 @@ SourcemapWatcher = require './Sourcemap'
 Generator = require('source-map').SourceMapGenerator
 SourceNode = require('source-map').SourceNode
 
+esprima = require 'esprima'
+
 class ScriptWatcher extends SourcemapWatcher
     constructor: (@config)->
         types = @config.types || [
@@ -25,11 +27,20 @@ class ScriptWatcher extends SourcemapWatcher
 
 ScriptWatcher.renderers =
     js: (content, path)->
-        content = "(function(){\n#{content}\n}).call(this);"
-        sourceNode = new SourceNode 1, 0, path.replace "#{@config.root}/", ''
-        sourceNode.add content.split '\n'
-        sourceMap = sourceNode.toStringWithSourceMap().map.toJSON()
+        source = file = path.replace "#{@config.root}/", ''
+        content = "(function(){\n#{content}\n}).call(this);\n"
+
+        generator = new Generator({file})
+        esprima.tokenize(content, {loc: yes}).forEach (token)->
+            generated = original = token.loc.start
+            mapping = {generated, original, source}
+            if token.type is 'Identifier'
+                mapping.name = token.value
+            generator.addMapping mapping
+
+        sourceMap = generator.toJSON()
         sourceMap.sourcesContent = [content]
+
         {content, sourceMap}
 
     coffee: (code, path)->
