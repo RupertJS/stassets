@@ -25,6 +25,7 @@ class ScriptWatcher extends SourcemapWatcher
 
 ScriptWatcher.renderers =
     js: (content, path)->
+        content = "(function(){\n#{content}\n}).call(this);"
         sourceNode = new SourceNode 1, 0, path.replace "#{@config.root}/", ''
         sourceNode.add content.split '\n'
         sourceMap = sourceNode.toStringWithSourceMap().map.toJSON()
