@@ -28,11 +28,12 @@ class ScriptWatcher extends SourcemapWatcher
 ScriptWatcher.renderers =
     js: (content, path)->
         source = file = path.replace "#{@config.root}/", ''
-        content = "(function(){\n#{content}\n}).call(this);\n"
 
         generator = new Generator({file})
         esprima.tokenize(content, {loc: yes}).forEach (token)->
-            generated = original = token.loc.start
+            loc = token.loc.start
+            original = {line: loc.line, column: loc.column}
+            generated = {line: loc.line + 1, column: loc.column}
             mapping = {generated, original, source}
             if token.type is 'Identifier'
                 mapping.name = token.value
@@ -41,6 +42,7 @@ ScriptWatcher.renderers =
         sourceMap = generator.toJSON()
         sourceMap.sourcesContent = [content]
 
+        content = "(function(){\n#{content}\n}).call(this);\n"
         {content, sourceMap}
 
     coffee: (code, path)->
