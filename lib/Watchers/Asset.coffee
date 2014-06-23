@@ -43,6 +43,7 @@ class AssetWatcher extends Logger
         @promise = @_defer.promise
         @content = ""
         @filelist = {}
+        @config = @config or {verbose: no}
 
         unless @pattern? and @pattern instanceof Array
             throw new Error "No sane pattern, have #{@pattern}"
