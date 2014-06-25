@@ -43,6 +43,7 @@ Stassets.DEFAULTS =
 
 middleware = (config)->
     stassets = new Stassets(config)
+    middleware.watchers = stassets.watchers
     (req, res, next)->
         stassets.handle(req, res, next)
 

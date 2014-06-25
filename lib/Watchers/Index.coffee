@@ -6,7 +6,12 @@ class IndexWatcher extends AssetWatcher
         @pattern = [ "#{@config.root}/index.jade" ]
         super()
 
-    matches: (path)-> path in ['/', '/index.html']
+    matches: (path)->
+        if @config.deeplink
+            # /api is allowed, non deep links are allowed.
+            if not path.match /^\/(?:api|[^/]+$)/
+                return true
+        path in ['/', '/index.html']
     type: -> "text/html; charset=utf-8"
 
     render: (_, filename)->

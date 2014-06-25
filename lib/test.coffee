@@ -6,7 +6,10 @@ stasset = require './index'
 
 app = express()
 
-app.use(stasset({root: "#{__dirname}/../test/assets"}))
+app.use(stasset({
+    root: "#{__dirname}/../test/assets"
+    deeplink: yes
+}))
 
 loadFixture = (fixture)->
     fs.readFileSync(
@@ -29,6 +32,15 @@ describe "DS Asset Middleware", ->
             .end(done)
 
         it 'injects fingerprints', ->
+
+        it 'deep links', (done)->
+            request(app)
+            .get('/deep/link')
+            .set('Accept', 'text/html')
+            .expect(200)
+            .expect('Content-Type', /html; charset=utf-8/)
+            .expect(loadFixture('index.html'))
+            .end(done)
 
     describe "Templates", ->
         it 'renders jade to JS', (done)->
