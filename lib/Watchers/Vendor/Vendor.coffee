@@ -1,5 +1,6 @@
 Path = require 'path'
 AssetWatcher = require '../Asset'
+minimatch = require 'minimatch'
 
 class VendorWatcher extends AssetWatcher
     constructor: ->
@@ -9,5 +10,17 @@ class VendorWatcher extends AssetWatcher
         @pattern = @pattern.map (_)->
             if _.indexOf("**/") is 0 then _ else "**/#{_}"
         super()
+
+    vendorOrder: (path)->
+        order = Number.MAX_VALUE
+        @pattern.forEach (pattern, i)->
+            order = i if minimatch path, pattern
+        order
+
+    getFilenames: ->
+        Object
+            .keys(@filelist)
+            .sort (a, b)=>
+                @vendorOrder(a) - @vendorOrder(b)
 
 module.exports = VendorWatcher

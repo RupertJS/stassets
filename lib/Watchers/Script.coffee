@@ -2,6 +2,7 @@ fs = require 'fs'
 SourcemapWatcher = require './Sourcemap'
 Generator = require('source-map').SourceMapGenerator
 SourceNode = require('source-map').SourceNode
+minimatch = require 'minimatch'
 
 esprima = require 'esprima'
 
@@ -9,11 +10,11 @@ class ScriptWatcher extends SourcemapWatcher
     constructor: (@config)->
         types = @config.types || [
             'main'
-            'directive'
+            'provider'
+            'filter'
             'service'
             'controller'
-            'filter'
-            'provider'
+            'directive'
         ].concat @config.additionalTypes
 
         prefix = (ext)=> (_)=> "**/#{_}.#{ext}"
@@ -22,6 +23,27 @@ class ScriptWatcher extends SourcemapWatcher
             .concat(types.map(prefix('coffee')))
         @files = ['/app.js', '/application.js']
         super()
+
+    patternOrder: (path)->
+        order = Number.MAX_VALUE
+        @pattern.forEach (pattern, i)->
+            order = i if minimatch path, pattern
+        order
+
+    getFilenames: ->
+        Object
+            .keys(@filelist)
+            .sort (a, b)=>
+                order = @patternOrder(a) - @patternOrder(b)
+                if order is 0
+                    if a > b
+                        1
+                    else if a < b
+                        -1
+                    else
+                        0
+                else
+                    0
 
     render: (code, path)->
         extension = path.substr(path.lastIndexOf('.') + 1)

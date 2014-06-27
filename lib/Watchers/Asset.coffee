@@ -64,6 +64,12 @@ class AssetWatcher extends Logger
         delete @filelist[filepath]
         @compile()
 
+    ###
+    This should return an array of files in the correct insert order.
+    ###
+    getFilenames: ->
+        Object.keys(@filelist)
+
     type: -> "application/javascript"
 
     handle: (req, res, next)->
@@ -86,7 +92,7 @@ class AssetWatcher extends Logger
     `this.content`.
     ###
     compile: ->
-        filenames = Object.keys(@filelist)
+        filenames = @getFilenames()
 
         # console.log "Compiling #{filenames}..."
 
