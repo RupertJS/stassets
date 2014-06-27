@@ -10,7 +10,6 @@ Pool = {}
 
 GetPool = (root)->
     root = Path.relative process.cwd(), root
-    console.log 'Gazing at ', "#{root}/**/*"
     Pool[root] = Pool[root] or new Gaze "#{root}/**/*"
 
 class Mirror extends EventEmitter
@@ -28,7 +27,7 @@ class Mirror extends EventEmitter
         @gaze.on 'all', (eventName, path)=>
             @pattern
             .filter(minmatch(path))
-            .forEach (path)=>
+            .forEach (pattern)=>
                 @emit 'all', eventName, path
                 @emit eventName, path
 
