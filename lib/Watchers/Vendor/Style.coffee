@@ -1,11 +1,10 @@
 Path = require 'path'
-AssetWatcher = require('../Asset')
+VendorWatcher = require('./Vendor')
 
-class VendorStyleWatcher extends AssetWatcher
+class VendorStyleWatcher extends VendorWatcher
     constructor: (@config)->
-        @pattern = @config.vendors.css.map (_)=>
-            Path.normalize "#{@config.vendors.prefix}/#{_}"
-        super(config)
+        @pattern = @config.vendors.css
+        super()
 
     matches: (path)-> path in ['/vendors.css']
     type: -> "text/css"

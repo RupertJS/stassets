@@ -1,10 +1,9 @@
 Path = require 'path'
-AssetWatcher = require('../Asset')
+VendorWatcher = require('./Vendor')
 
-class VendorScriptWatcher extends AssetWatcher
+class VendorScriptWatcher extends VendorWatcher
     constructor: (@config)->
-        @pattern = @config.vendors.js.map (_)=>
-            Path.normalize "#{@config.vendors.prefix}/#{_}"
+        @pattern = @config.vendors.js
         super()
 
     matches: (path)-> path in ['/vendors.js']

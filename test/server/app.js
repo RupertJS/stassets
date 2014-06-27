@@ -10,7 +10,7 @@ app.use(stasset({
     vendors: {
         prefix: __dirname + "/../../bower_components",
         js: [ 'angular/angular.js' ],
-        css: [ 'bootstrap/dist/css/*' ]
+        css: [ 'bootstrap/dist/css/bootstrap.css' ]
     }
 }));
 app.listen(8989);
