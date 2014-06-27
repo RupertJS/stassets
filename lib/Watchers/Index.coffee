@@ -3,7 +3,7 @@ AssetWatcher = require('./Asset')
 
 class IndexWatcher extends AssetWatcher
     constructor: (@config)->
-        @pattern = [ "#{@config.root}/index.jade" ]
+        @pattern = [ "**/index.jade" ]
         super()
 
     matches: (path)->

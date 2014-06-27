@@ -1,9 +1,4 @@
 (function() {
-  angular.module('stassets.main', ['stassets.main.controller', 'main.template']);
-
-}).call(this);
-
-(function() {
   var MainCtrl;
 
   MainCtrl = (function() {
@@ -17,15 +12,20 @@
 
 }).call(this);
 
-(function(){
-angular.module('stassets.main.nav.service', [
-]).service('NavSvc', function NavSvc(){
-    this.started = new Date();
-});
+(function() {
+  angular.module('stassets.main', ['stassets.main.controller', 'main.template']);
 
 }).call(this);
 
 (function() {
   angular.module('stassets.main.nav.directive', ['main.nav.template']);
+
+}).call(this);
+
+(function(){
+angular.module('stassets.main.nav.service', [
+]).service('NavSvc', function NavSvc(){
+    this.started = new Date();
+});
 
 }).call(this);

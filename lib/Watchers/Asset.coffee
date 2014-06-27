@@ -3,13 +3,8 @@ fs = require 'fs'
 Q = require 'q'
 
 readFile = Q.denodeify fs.readFile
-
+Mirror = require '../mirror'
 sha1 = require 'sha1'
-
-Gaze = require('gaze').Gaze
-minimatch = require 'minimatch' # TODO Remove after
-                                # https://github.com/shama/gaze/issues/104
-                                # gets resolved
 
 class Loader
     constructor: (@path, watcher)->
@@ -45,32 +40,19 @@ class AssetWatcher extends Logger
         @filelist = {}
         @config = @config or {verbose: no}
 
-        unless @pattern? and @pattern instanceof Array
-            throw new Error "No sane pattern, have #{@pattern}"
+        @watch new Mirror @config.root, @pattern
 
-        watch = (filepath)=> # TODO Remove [shama/gaze/issues/104]
-            for pattern in @pattern
-                if minimatch filepath, pattern
-                    return true
-            false
-
-        @gaze = new Gaze @pattern
-
+    watch: (@gaze)->
         @gaze.on 'error', (_)=> console.log _
 
         @gaze.on 'ready', =>
-            @gaze.watched (err, matched = {})=>
+            @gaze.watched (err, @filelist = {})=>
                 return console.log err if err
-                for _, files of matched
-                    files
-                    .filter(watch)
-                    .forEach (filepath)=>
-                        if fs.statSync(filepath).isFile()
-                            @filelist[filepath] = yes
                 @compile()
-        @gaze.on 'added', (_)=> @add _ if watch _
-        @gaze.on 'deleted', (_) => @remove _ if watch _
-        @gaze.on 'changed', (_)=> @compile() if watch _
+
+        @gaze.on 'added', (_)=> @add _
+        @gaze.on 'deleted', (_) => @remove _
+        @gaze.on 'changed', (_)=> @compile()
 
     add: (filepath)->
         if fs.statSync(filepath).isFile()
@@ -78,10 +60,9 @@ class AssetWatcher extends Logger
             @compile()
 
     remove: (filepath)->
-        if fs.statSync(filepath).isFile()
-            @filelist[filepath] = no
-            delete @filelist[filepath]
-            @compile()
+        @filelist[filepath] = no
+        delete @filelist[filepath]
+        @compile()
 
     type: -> "application/javascript"
 
@@ -114,8 +95,8 @@ class AssetWatcher extends Logger
         renderMap = readMap.map (_)=>
             d = Q.defer()
             _.then ([__, loader])=>
+                @printStart loader
                 try
-                    @printStart loader
                     d.resolve @render __, loader.path
                 catch err
                     d.reject err

@@ -12,7 +12,7 @@ escapeContent = (content)->
 
 class TemplateWatcher extends AssetWatcher
     constructor: (@config)->
-        @pattern = ["#{@config.root}/**/template.jade"]
+        @pattern = ["**/template.jade"]
         super()
 
     matches: (path)-> path in ['/templates.js', "/templates-#{@hash()}.js"]

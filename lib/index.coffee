@@ -37,7 +37,7 @@ Stassets.DEFAULTS =
     verbose: no
     root: '.'
     vendors:
-        prefix: "#{__dirname}/../bower_components"
+        prefix: "../bower_components"
         js: [ 'angular/angular.js' ]
         css: [ 'bootstrap/dist/css/*' ]
 

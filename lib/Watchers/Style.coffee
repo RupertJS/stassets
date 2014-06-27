@@ -4,7 +4,7 @@ q = require 'q'
 
 class StyleWatcher extends AssetWatcher
     constructor: ->
-        @pattern = ["#{@config.root}/**/#{@name}.styl"]
+        @pattern = ["**/#{@name}.styl"]
         super()
 
     type: -> "text/css"

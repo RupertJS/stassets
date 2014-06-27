@@ -16,8 +16,10 @@ class ScriptWatcher extends SourcemapWatcher
             'provider'
         ].concat @config.additionalTypes
 
-        prefix = (ext)=> (_)=> "#{@config.root}/**/#{_}.#{ext}"
-        @pattern = types.map(prefix('js')).concat(types.map(prefix('coffee')))
+        prefix = (ext)=> (_)=> "**/#{_}.#{ext}"
+        @pattern = []
+            .concat(types.map(prefix('js')))
+            .concat(types.map(prefix('coffee')))
         @files = ['/app.js', '/application.js']
         super()
 
