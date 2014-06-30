@@ -52,12 +52,18 @@ class AssetWatcher extends Logger
             pat.match(/\.([a-z]+)$/)[1]
 
     watch: (@gaze)->
+        @printedEMFILE = @printedEMFILE or no
         @gaze.on 'error', (_)=>
-            debugger
             switch _.code
                 when 'EMFILE'
-                    file = _.message.match(/"([^"]+)"/)[1]
-                    console.log "EMFILE", file
+                    unless @printedEMFILE
+                        file = _.message.match(/"([^"]+)"/)[1]
+                        console.log 'EMFILE', file
+                        console.log 'This is likely due to a large watch list.'
+                        console.log 'It will still work, but be slow (polling).'
+                        console.log 'Consider using `ulimit -n` to raise limit.'
+                        console.log ''
+                        @printedEMFILE = yes
                 else
                     console.log _.code
 
