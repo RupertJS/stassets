@@ -49,7 +49,7 @@ class AssetWatcher extends Logger
 
     extensions: ->
         @pattern().map (pat)->
-            pat.match(/\.([a-z]+)$/)[1]
+            pat.match(/\.([a-z]+)$/)?[1] or 'nothing'
 
     watch: (@gaze)->
         @printedEMFILE = @printedEMFILE or no
@@ -57,7 +57,7 @@ class AssetWatcher extends Logger
             switch _.code
                 when 'EMFILE'
                     unless @printedEMFILE
-                        file = _.message.match(/"([^"]+)"/)[1]
+                        file = _.message.match(/"([^"]+)"/)?[1] or 'ERR_FILE'
                         console.log 'EMFILE', file
                         console.log 'This is likely due to a large watch list.'
                         console.log 'It will still work, but be slow (polling).'
