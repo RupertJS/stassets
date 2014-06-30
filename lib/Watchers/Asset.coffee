@@ -50,19 +50,18 @@ class AssetWatcher extends Logger
                 return console.log err if err
                 @compile()
 
-        @gaze.on 'added', (_)=> @add _
-        @gaze.on 'deleted', (_) => @remove _
+        @gaze.on 'added', (_)=> @add _ ; @compile()
+        @gaze.on 'deleted', (_) => @remove _ ; @compile()
         @gaze.on 'changed', (_)=> @compile()
+        @gaze.on 'renamed', (n, o)=> @remove o ; @add n ; @compile()
 
     add: (filepath)->
         if fs.statSync(filepath).isFile()
             @filelist[filepath] = yes
-            @compile()
 
     remove: (filepath)->
         @filelist[filepath] = no
         delete @filelist[filepath]
-        @compile()
 
     ###
     This should return an array of files in the correct insert order.

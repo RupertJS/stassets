@@ -10,6 +10,7 @@ Pool = {}
 
 GetPool = (root)->
     root = Path.relative process.cwd(), root
+    root = './' if root is '' # Prevent enumerating fs root when run in cwd.
     Pool[root] = Pool[root] or new Gaze "#{root}/**/*"
 
 class Mirror extends EventEmitter
