@@ -1,10 +1,11 @@
-fs = require 'fs'
+fs = require 'graceful-fs'
 AssetWatcher = require('./Asset')
 
 class IndexWatcher extends AssetWatcher
     constructor: (@config)->
-        @pattern = [ "**/index.jade" ]
         super()
+
+    pattern: -> [ "**/index.jade" ]
 
     matches: (path)->
         if @config.deeplink

@@ -1,4 +1,4 @@
-fs = require 'fs'
+fs = require 'graceful-fs'
 SourcemapWatcher = require './Sourcemap'
 Generator = require('source-map').SourceMapGenerator
 SourceNode = require('source-map').SourceNode
@@ -8,6 +8,11 @@ esprima = require 'esprima'
 
 class ScriptWatcher extends SourcemapWatcher
     constructor: (@config)->
+        @files = ['/app.js', '/application.js']
+        super()
+
+    extensions: -> ['js', 'coffee']
+    pattern: ->
         types = @config.types || [
             'main'
             'provider'
@@ -15,24 +20,24 @@ class ScriptWatcher extends SourcemapWatcher
             'service'
             'controller'
             'directive'
-        ].concat @config.additionalTypes
+        ].concat(@config.additionalTypes or [])
 
         prefix = (ext)=> (_)=> "**/#{_}.#{ext}"
-        @pattern = []
-            .concat(types.map(prefix('js')))
-            .concat(types.map(prefix('coffee')))
-        @files = ['/app.js', '/application.js']
-        super()
+        types.map(prefix('*'))
 
     patternOrder: (path)->
-        order = Number.MAX_VALUE
-        @pattern.forEach (pattern, i)->
-            order = i if minimatch path, pattern
-        order
+        p = @pattern()
+        i = 0
+        while i < p.length
+            if minimatch path, p[i]
+                break
+            i++
+        i
 
     getFilenames: ->
         Object
             .keys(@filelist)
+            .filter((filename)-> filename.indexOf('test.') is -1)
             .sort (a, b)=>
                 order = @patternOrder(a) - @patternOrder(b)
                 if order is 0
@@ -43,7 +48,7 @@ class ScriptWatcher extends SourcemapWatcher
                     else
                         0
                 else
-                    0
+                    order
 
     render: (code, path)->
         extension = path.substr(path.lastIndexOf('.') + 1)

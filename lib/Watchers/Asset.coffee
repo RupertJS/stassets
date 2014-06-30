@@ -1,5 +1,5 @@
 Path = require 'path'
-fs = require 'fs'
+fs = require 'graceful-fs'
 Q = require 'q'
 
 readFile = Q.denodeify fs.readFile
@@ -40,10 +40,26 @@ class AssetWatcher extends Logger
         @filelist = {}
         @config = @config or {verbose: no}
 
-        @watch new Mirror @config.root, @pattern
+        @watch new Mirror(
+            @config.root
+            @extensions()
+            @pattern()
+            @config.noAdd or no
+        )
+
+    extensions: ->
+        @pattern().map (pat)->
+            pat.match(/\.([a-z]+)$/)[1]
 
     watch: (@gaze)->
-        @gaze.on 'error', (_)=> console.log _
+        @gaze.on 'error', (_)=>
+            debugger
+            switch _.code
+                when 'EMFILE'
+                    file = _.message.match(/"([^"]+)"/)[1]
+                    console.log "EMFILE", file
+                else
+                    console.log _.code
 
         @gaze.on 'ready', =>
             @gaze.watched (err, @filelist = {})=>

@@ -1,4 +1,4 @@
-fs = require 'fs'
+fs = require 'graceful-fs'
 AssetWatcher = require './Asset'
 
 stripNewlines = (content)->
@@ -12,8 +12,9 @@ escapeContent = (content)->
 
 class TemplateWatcher extends AssetWatcher
     constructor: (@config)->
-        @pattern = ["**/template.jade"]
         super()
+
+    pattern: -> ["**/template.jade"]
 
     matches: (path)-> path in ['/templates.js', "/templates-#{@hash()}.js"]
 
@@ -22,6 +23,8 @@ class TemplateWatcher extends AssetWatcher
             .replace(@config.root + '/', '')
             .replace('.jade', '')
         module = shortPath.replace /\//g, '.'
+        if @config.templateModuleRoot
+            module = "#{@config.templateModuleRoot}.#{module}"
         shortPath = shortPath.replace '/template', ''
         options =
             filename: path

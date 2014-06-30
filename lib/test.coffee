@@ -1,5 +1,5 @@
 should = require('chai').should()
-fs = require 'fs'
+fs = require 'graceful-fs'
 request = require 'supertest'
 express = require 'express'
 stasset = require './index'
@@ -52,7 +52,7 @@ describe "DS Asset Middleware", ->
             .expect(loadFixture('templates.js'))
             .end(done)
 
-        it 'inserts into correct modules', ->
+        it.skip 'inserts into correct modules', ->
 
     describe "App Styles", ->
         it 'renders Stylus with Nib', (done)->
@@ -87,7 +87,7 @@ describe "DS Asset Middleware", ->
             .expect(loadFixture('application.js'))
             .end(done)
 
-        it 'ignores test code', ->
+        it.skip 'ignores test code', ->
             # Not directly tested, as the loadFixture above would fail.
 
         it 'references a sourcemap', (done)->

@@ -3,9 +3,10 @@ VendorWatcher = require('./Vendor')
 
 class VendorScriptWatcher extends VendorWatcher
     constructor: (@config)->
-        @pattern = @config.vendors.js
         super()
 
+    extensions: -> ['js']
+    pattern: -> @config.vendors.js
     matches: (path)-> path in ['/vendors.js']
     type: -> "application/javascript"
 

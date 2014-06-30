@@ -1,11 +1,12 @@
-fs = require 'fs'
+fs = require 'graceful-fs'
 AssetWatcher = require './Asset'
 q = require 'q'
 
 class StyleWatcher extends AssetWatcher
     constructor: ->
-        @pattern = ["**/#{@name}.styl"]
         super()
+
+    pattern: -> ["**/#{@name}.styl"]
 
     type: -> "text/css"
     matches: (path)-> path is "/#{@name}.css"

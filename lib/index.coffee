@@ -1,4 +1,4 @@
-fs = require 'fs'
+fs = require 'graceful-fs'
 Path = require 'path'
 sha1 = require 'sha1'
 Q = require 'q'
@@ -39,7 +39,7 @@ Stassets.DEFAULTS =
     vendors:
         prefix: "../bower_components"
         js: [ 'angular/angular.js' ]
-        css: [ 'bootstrap/dist/css/*' ]
+        css: [ 'bootstrap/dist/css/*.css' ]
 
 middleware = (config)->
     stassets = new Stassets(config)
