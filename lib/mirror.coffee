@@ -42,8 +42,15 @@ class Mirror extends EventEmitter
 
     toWatch: -> (filepath)=> # TODO Remove [shama/gaze/issues/104]
         for pattern in @pattern
-            if minimatch(filepath, pattern) or filepath.indexOf(pattern) > -1
-                return true
+            if pattern instanceof RegExp
+                if pattern.test filepath
+                    return true
+            if typeof pattern is 'string'
+                if pattern.indexOf '*' > -1
+                    if minimatch(filepath, pattern, {matchBase: yes})
+                        return true
+                if filepath.indexOf(pattern) > -1
+                    return true
         false
 
     watched: (cb)->
@@ -51,7 +58,6 @@ class Mirror extends EventEmitter
 
         Q.all @pond.map (gaze)=>
             d = Q.defer()
-            debugger
             gaze.watched (err, matched = {})=>
                 return d.reject err if err
                 for _, files of matched

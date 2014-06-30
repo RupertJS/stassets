@@ -6,7 +6,8 @@ class StyleWatcher extends AssetWatcher
     constructor: ->
         super()
 
-    pattern: -> ["**/#{@name}.styl"]
+    pattern: -> [///#{@name}.styl$///]
+    extensions: -> ['styl']
 
     type: -> "text/css"
     matches: (path)-> path is "/#{@name}.css"

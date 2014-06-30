@@ -19,7 +19,6 @@ class VendorWatcher extends AssetWatcher
         order
 
     getFilenames: ->
-        debugger
         Object
             .keys(@filelist)
             .sort (a, b)=>

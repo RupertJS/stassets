@@ -22,14 +22,14 @@ class ScriptWatcher extends SourcemapWatcher
             'directive'
         ].concat(@config.additionalTypes or [])
 
-        prefix = (ext)=> (_)=> "**/#{_}.#{ext}"
-        types.map(prefix('*'))
+        prefix = (_)=> ///#{_}\.(?:js|coffee)$///
+        types.map(prefix)
 
     patternOrder: (path)->
         p = @pattern()
         i = 0
         while i < p.length
-            if minimatch path, p[i]
+            if p[i].test path
                 break
             i++
         i
