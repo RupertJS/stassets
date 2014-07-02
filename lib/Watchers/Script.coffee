@@ -9,11 +9,7 @@ esprima = require 'esprima'
 class ScriptWatcher extends SourcemapWatcher
     constructor: (@config)->
         @files = ['/app.js', '/application.js']
-        super()
-
-    extensions: -> ['js', 'coffee']
-    pattern: ->
-        types = @config.types || [
+        @config.types = @config.types || [
             'main'
             'provider'
             'filter'
@@ -21,15 +17,21 @@ class ScriptWatcher extends SourcemapWatcher
             'controller'
             'directive'
         ].concat(@config.additionalTypes or [])
+        @config.typeList = @config.typeList or [
+            'js'
+            'coffee'
+        ].concat(@config.additionalTypeList or [])
+        super()
 
-        prefix = (_)=> ///#{_}\.(?:js|coffee)$///
-        types.map(prefix)
+    pattern: ->
+        prefix = (_)=> "**/#{_}.{#{@config.typeList.join(',')}}"
+        super @config.types.map(prefix)
 
     patternOrder: (path)->
-        p = @pattern()
+        p = @config.types
         i = 0
         while i < p.length
-            if p[i].test path
+            if path.indexOf("#{p[i]}.") > -1
                 break
             i++
         i

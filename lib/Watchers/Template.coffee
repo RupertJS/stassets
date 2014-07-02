@@ -14,9 +14,7 @@ class TemplateWatcher extends AssetWatcher
     constructor: (@config)->
         super()
 
-    #pattern: -> ["**/template.jade"]
-    pattern: -> [/template.jade$/]
-    extensions: -> ['.jade']
+    pattern: -> super ["**/template.jade"]
 
     matches: (path)-> path in ['/templates.js', "/templates-#{@hash()}.js"]
 

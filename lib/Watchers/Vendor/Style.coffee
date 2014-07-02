@@ -3,9 +3,10 @@ VendorWatcher = require('./Vendor')
 
 class VendorStyleWatcher extends VendorWatcher
     constructor: (@config)->
+        # @config.howMany = 'every'
         super()
 
-    pattern: -> @config.vendors.css
+    pattern: -> super @config.vendors.css
 
     matches: (path)-> path in ['/vendors.css']
     type: -> "text/css"

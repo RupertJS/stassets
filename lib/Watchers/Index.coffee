@@ -5,8 +5,7 @@ class IndexWatcher extends AssetWatcher
     constructor: (@config)->
         super()
 
-    pattern: -> [ /index.jade$/ ]
-    extensions: -> ['jade']
+    pattern: -> super [ "index.jade" ]
 
     matches: (path)->
         if @config.deeplink

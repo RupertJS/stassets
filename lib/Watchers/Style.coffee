@@ -3,11 +3,9 @@ AssetWatcher = require './Asset'
 q = require 'q'
 
 class StyleWatcher extends AssetWatcher
-    constructor: ->
-        super()
+    constructor: -> super()
 
-    pattern: -> [///#{@name}.styl$///]
-    extensions: -> ['styl']
+    pattern: -> super ["**/#{@name}.styl"]
 
     type: -> "text/css"
     matches: (path)-> path is "/#{@name}.css"

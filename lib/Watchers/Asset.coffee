@@ -41,15 +41,18 @@ class AssetWatcher extends Logger
         @config = @config or {verbose: no}
 
         @watch new Mirror(
-            @config.root
-            @extensions()
             @pattern()
-            @config.noAdd or no
+            @config.howMany
         )
 
-    extensions: ->
-        @pattern().map (pat)->
-            pat.match(/\.([a-z]+)$/)?[1] or 'nothing'
+    pattern: (patterns)->
+        root = Path.normalize @config.root
+        # root = Path.relative process.cwd(), root
+        patterns.map (pattern)->
+            if pattern.indexOf('!') is 0
+                pattern
+            else
+                "#{root}/#{pattern}"
 
     watch: (@gaze)->
         @printedEMFILE = @printedEMFILE or no
@@ -68,8 +71,10 @@ class AssetWatcher extends Logger
                     console.log _.code
 
         @gaze.on 'ready', =>
-            @gaze.watched (err, @filelist = {})=>
+            @gaze.watched (err, filelist = {})=>
                 return console.log err if err
+                Object.keys(filelist).forEach (file)=>
+                    @add file
                 @compile()
 
         @gaze.on 'added', (_)=> @add _ ; @compile()

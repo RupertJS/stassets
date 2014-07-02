@@ -19,14 +19,15 @@ GetPool = (root, extensions, noGlob)->
         Pool[watch] = Pool[watch] or new Gaze watch
 
 class Mirror extends EventEmitter
-    constructor: (root, extensions, @pattern, noGlob)->
+    constructor: (@pattern, @howMany = 'some')->
         unless @pattern? and @pattern instanceof Array
             throw new Error "No sane pattern; have #{@pattern}, need Array."
 
-        if noGlob then extensions = @pattern
+        # if noGlob then extensions = @pattern
 
-        @pond = GetPool root, extensions, noGlob
-        @gazeAt gaze for gaze in @pond
+        # @pond = GetPool root, extensions, noGlob
+        # @gazeAt gaze for gaze in @pond
+        @gazeAt @gaze = new Gaze @pattern
 
     gazeAt: (gaze)->
         minmatch = (path)-> (pattern)-> minimatch path, pattern
@@ -39,35 +40,31 @@ class Mirror extends EventEmitter
                 @emit 'all', eventName, path
                 @emit eventName, path
 
-
     toWatch: -> (filepath)=> # TODO Remove [shama/gaze/issues/104]
-        for pattern in @pattern
+        @pattern[@howMany] (pattern)->
             if pattern instanceof RegExp
                 if pattern.test filepath
                     return true
             if typeof pattern is 'string'
-                if pattern.indexOf '*' > -1
+                try
                     if minimatch(filepath, pattern, {matchBase: yes})
                         return true
-                if filepath.indexOf(pattern) > -1
-                    return true
-        false
+                    else
+                        if filepath.indexOf(pattern) > -1
+                            return true
+                catch e
+                    return false
+            return false
 
     watched: (cb)->
-        filelist = {}
-
-        Q.all @pond.map (gaze)=>
-            d = Q.defer()
-            gaze.watched (err, matched = {})=>
-                return d.reject err if err
-                for _, files of matched
-                    files
-                    .filter(@toWatch())
-                    .forEach (filepath)=>
-                        filelist[filepath] = yes
-                d.resolve()
-            d.promise
-        .catch(cb)
-        .done -> cb null, filelist
+        @gaze.watched (err, matched = {})=>
+            return cb err if err
+            filelist = {}
+            for _, files of matched
+                files
+                .filter(@toWatch())
+                .forEach (filepath)=>
+                    filelist[filepath] = yes
+            cb null, filelist
 
 module.exports = Mirror
