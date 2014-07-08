@@ -6,7 +6,8 @@ class VendorScriptWatcher extends VendorWatcher
         super()
 
     pattern: -> super @config.vendors.js
-    matches: (path)-> path in ['/vendors.js']
+    #matches: (path)-> path in ['/vendors.js']
+    getPaths: -> ['/vendors.js']
     type: -> "application/javascript"
 
 module.exports = VendorScriptWatcher

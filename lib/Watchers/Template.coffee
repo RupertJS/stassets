@@ -16,7 +16,7 @@ class TemplateWatcher extends AssetWatcher
 
     pattern: -> super ["**/template.jade"]
 
-    matches: (path)-> path in ['/templates.js', "/templates-#{@hash()}.js"]
+    getPaths: -> ['/templates.js', "/templates-#{@hash()}.js"]
 
     render: (code, path)->
         shortPath = path

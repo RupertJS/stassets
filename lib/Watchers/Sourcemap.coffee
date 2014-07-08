@@ -14,8 +14,7 @@ class SourcemapWatcher extends AssetWatcher
         else
             res.set('SourceMap', req.path + '.map').send(@content)
 
-    hash: -> sha1 @content
-    matches: (path)=> path in @files
+    getPaths: -> @files
     concat: (_)->
         content = _.map((f)->f.content).join '\n'
 

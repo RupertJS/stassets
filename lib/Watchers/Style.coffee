@@ -8,7 +8,8 @@ class StyleWatcher extends AssetWatcher
     pattern: -> super ["**/#{@name}.styl"]
 
     type: -> "text/css"
-    matches: (path)-> path is "/#{@name}.css"
+    # matches: (path)-> path is "/#{@name}.css"
+    getPaths: -> ["/#{@name}.css"]
 
     render: (code, path)->
         d = q.defer()

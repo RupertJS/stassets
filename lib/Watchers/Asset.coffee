@@ -6,6 +6,8 @@ readFile = Q.denodeify fs.readFile
 Mirror = require '../mirror'
 sha1 = require 'sha1'
 
+EventEmitter = require('events').EventEmitter
+
 class Loader
     constructor: (@path, watcher)->
         defer = Q.defer()
@@ -16,13 +18,20 @@ class Loader
             ((@err)=> defer.reject([@err, @]))
         )
 
-class Logger
+class Logger extends EventEmitter
     logString: (_)->
         "#{(new Date()).toISOString()} #{@constructor.name}:: #{_}"
+    logObject: (_)->
+        timestamp = new Date().toISOString()
+        name = @constructor.name
+        message = _
+        {timestamp, name, message}
     log: (_)->
+        @emit 'log', @logObject _
         return unless @config.verbose
         console.log @logString _
     err: (_)->
+        @emit 'err', @logObject _
         return unless @config.verbose
         console.error @logString _
     printStart: (loader)->
@@ -96,6 +105,8 @@ class AssetWatcher extends Logger
     getFilenames: ->
         Object.keys(@filelist)
 
+    getPaths: -> []
+    matches: (path)-> path in @getPaths()
     type: -> "application/javascript"
 
     handle: (req, res, next)->
@@ -153,6 +164,7 @@ class AssetWatcher extends Logger
     finish: (_)->
         @printSuccess()
         @content = _
+        @emit 'Compiled', {name: @constructor.name, files: @getPaths()}
         @_defer.resolve()
 
     formatReadError: (error, loader)-> error
