@@ -1,3 +1,4 @@
+Q = require 'q'
 fs = require 'graceful-fs'
 SourcemapWatcher = require './Sourcemap'
 Generator = require('source-map').SourceMapGenerator
@@ -5,6 +6,8 @@ SourceNode = require('source-map').SourceNode
 minimatch = require 'minimatch'
 
 esprima = require 'esprima'
+UglifyJS = require 'uglify-js'
+ngmin = require 'ngmin'
 
 class ScriptWatcher extends SourcemapWatcher
     constructor: (@config)->
@@ -55,6 +58,18 @@ class ScriptWatcher extends SourcemapWatcher
     render: (code, path)->
         extension = path.substr(path.lastIndexOf('.') + 1)
         ScriptWatcher.renderers[extension].call(this, code, path)
+
+    concat: (_)->
+        {content, sourceMap} = super _
+        return Q {content, sourceMap} unless @config.compressJS
+
+        content = ngmin.annotate content
+        result = UglifyJS.minify content,
+            fromString: true
+            inSourceMap: sourceMap
+            outSourceMap: "app.js.map"
+
+        Q {content: result.code, sourceMap: result.map}
 
 ScriptWatcher.renderers =
     js: (content, path)->
