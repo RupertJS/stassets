@@ -8,6 +8,8 @@ class Stassets
         for prop, val of Stassets.DEFAULTS
             @config[prop] or= val
 
+        @config.root = [@config.root] unless @config.root instanceof Array
+
         @watchers = [
             "Vendor/Script"
             "Vendor/Style"
