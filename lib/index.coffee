@@ -8,8 +8,6 @@ class Stassets
         for prop, val of Stassets.DEFAULTS
             @config[prop] or= val
 
-        @config.root = Path.normalize @config.root
-
         @watchers = [
             "Vendor/Script"
             "Vendor/Style"
@@ -38,7 +36,7 @@ class Stassets
 
 Stassets.DEFAULTS =
     verbose: no
-    root: '.'
+    root: ['.']
     vendors:
         prefix: "../bower_components"
         js: [ 'angular/angular.js' ]

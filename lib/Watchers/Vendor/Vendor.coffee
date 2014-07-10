@@ -5,7 +5,7 @@ minimatch = require 'minimatch'
 class VendorWatcher extends AssetWatcher
     constructor: ->
         @config = JSON.parse JSON.stringify @config # Quick clone hack
-        @config.root = Path.normalize @config.vendors.prefix
+        @config.root = [@config.vendors.prefix]
 
         super()
 

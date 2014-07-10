@@ -19,9 +19,7 @@ class TemplateWatcher extends AssetWatcher
     getPaths: -> ['/templates.js', "/templates-#{@hash()}.js"]
 
     render: (code, path)->
-        shortPath = path
-            .replace(@config.root + '/', '')
-            .replace('.jade', '')
+        shortPath = @pathpart(path).substr(1).replace('.jade', '')
         module = shortPath.replace /\//g, '.'
         if @config.templateModuleRoot
             module = "#{@config.templateModuleRoot}.#{module}"

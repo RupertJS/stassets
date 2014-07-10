@@ -7,7 +7,10 @@ stasset = require './index'
 app = express()
 
 app.use(stasset({
-    root: "#{__dirname}/../test/assets"
+    root: [
+        "#{__dirname}/../test/assets",
+        "#{__dirname}/../test/cascade"
+    ]
     deeplink: yes
 }))
 

@@ -48,6 +48,7 @@ class AssetWatcher extends Logger
         @content = ""
         @filelist = {}
         @config = @config or {verbose: no}
+        @config.root = (@config.root or ['./']).map Path.normalize
 
         @watch new Mirror(
             @pattern()
@@ -55,13 +56,15 @@ class AssetWatcher extends Logger
         )
 
     pattern: (patterns)->
-        root = Path.normalize @config.root
-        # root = Path.relative process.cwd(), root
-        patterns.map (pattern)->
+        rootPatterns = (pattern)=>
             if pattern.indexOf('!') is 0
-                pattern
+                [pattern]
             else
-                "#{root}/#{pattern}"
+                @config.root.map (root)->
+                    "#{root}/#{pattern}"
+        flatten = (v, a)-> a.concat(v); a
+        fullList = patterns.map(rootPatterns).reduce(flatten, [])
+        fullList
 
     watch: (@gaze)->
         @printedEMFILE = @printedEMFILE or no
@@ -99,11 +102,21 @@ class AssetWatcher extends Logger
         @filelist[filepath] = no
         delete @filelist[filepath]
 
+    pathpart: (path)->
+        for root in @config.root
+            path = path.replace(root, '')
+        path
+
     ###
     This should return an array of files in the correct insert order.
     ###
     getFilenames: ->
-        Object.keys(@filelist)
+        list = Object.keys(@filelist)
+        hset = {}
+        list.forEach (path)=>
+            hset[@pathpart(path)] = path
+        hlist = (v for k, v of hset)
+        hlist
 
     getPaths: -> []
     matches: (path)-> path in @getPaths()
