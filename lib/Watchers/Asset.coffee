@@ -62,7 +62,7 @@ class AssetWatcher extends Logger
             else
                 @config.root.map (root)->
                     "#{root}/#{pattern}"
-        flatten = (v, a)-> a.concat(v); a
+        flatten = (a, v)->a.concat(v)
         fullList = patterns.map(rootPatterns).reduce(flatten, [])
         fullList
 
@@ -144,7 +144,7 @@ class AssetWatcher extends Logger
     compile: ->
         filenames = @getFilenames()
 
-        # console.log "Compiling #{filenames}..."
+        console.log @logString "Compiling #{filenames}..."
 
         readMap = filenames.map (_)=> (new Loader(_, @)).promise
 

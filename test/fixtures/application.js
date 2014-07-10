@@ -26,6 +26,11 @@ angular.module('stassets.main.nav.service', [
 }).call(this);
 
 (function() {
-  angular.module('stassets.main.nav.directive', ['main.nav.template']);
+  angular.module('stassets.main.nav.directive', ['main.nav.template', 'main.nav.service']).directive('stassetNav', function() {
+    return {
+      restrict: 'AE',
+      templateUrl: 'main/nav'
+    };
+  });
 
 }).call(this);

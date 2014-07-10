@@ -28,7 +28,8 @@ class ScriptWatcher extends SourcemapWatcher
 
     pattern: ->
         prefix = (_)=> "**/#{_}.{#{@config.typeList.join(',')}}"
-        super @config.types.map(prefix)
+        typeList = @config.types.map(prefix)
+        super typeList
 
     patternOrder: (path)->
         p = @config.types
@@ -40,8 +41,7 @@ class ScriptWatcher extends SourcemapWatcher
         i
 
     getFilenames: ->
-        Object
-            .keys(@filelist)
+        super()
             .filter((filename)-> filename.indexOf('test.') is -1)
             .sort (a, b)=>
                 order = @patternOrder(a) - @patternOrder(b)
@@ -73,7 +73,7 @@ class ScriptWatcher extends SourcemapWatcher
 
 ScriptWatcher.renderers =
     js: (content, path)->
-        source = file = path.replace "#{@config.root}/", ''
+        source = file = @pathpart path
 
         generator = new Generator({file})
         esprima.tokenize(content, {loc: yes}).forEach (token)->
@@ -97,7 +97,7 @@ ScriptWatcher.renderers =
             literate: no
             sourceMap: yes
             sourceRoot: ''
-            sourceFiles: [path.replace "#{@config.root}/", '']
+            sourceFiles: [@pathpart path]
 
         build = require('coffee-script').compile(code, options)
         content = build.js#.replace(/\n/gm, '')
