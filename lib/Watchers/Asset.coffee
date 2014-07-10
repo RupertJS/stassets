@@ -144,7 +144,7 @@ class AssetWatcher extends Logger
     compile: ->
         filenames = @getFilenames()
 
-        console.log @logString "Compiling #{filenames}..."
+        # console.log @logString "Compiling #{filenames}..."
 
         readMap = filenames.map (_)=> (new Loader(_, @)).promise
 
