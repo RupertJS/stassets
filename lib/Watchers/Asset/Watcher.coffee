@@ -1,7 +1,7 @@
 fs = require 'fs'
 Path = require 'path'
 LogEmitter = require './LogEmitter'
-Mirror = require '../../mirror'
+Mirror = require './mirror'
 
 class AssetWatcher extends LogEmitter
     constructor: ->
