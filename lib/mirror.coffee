@@ -2,6 +2,7 @@ fs = require 'graceful-fs'
 Path = require 'path'
 EventEmitter = require('events').EventEmitter
 Gaze = require('gaze').Gaze
+Gaze = require('gaze').Gaze
 minimatch = require 'minimatch' # TODO Remove after
                                 # https://github.com/shama/gaze/issues/104
                                 # gets resolved
@@ -19,7 +20,9 @@ GetPool = (root, extensions, noGlob)->
         Pool[watch] = Pool[watch] or new Gaze watch
 
 class Mirror extends EventEmitter
-    constructor: (@pattern, @howMany = 'some')->
+    constructor: (@root, @pattern, @howMany = 'some')->
+        unless @root? and @root instanceof Array
+            throw new Error "No sane roots; have #{@root}, need Array"
         unless @pattern? and @pattern instanceof Array
             throw new Error "No sane pattern; have #{@pattern}, need Array."
 

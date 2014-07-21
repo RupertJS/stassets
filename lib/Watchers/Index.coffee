@@ -1,7 +1,7 @@
 fs = require 'graceful-fs'
-AssetWatcher = require('./Asset')
+AssetBuilder = require('./Asset')
 
-class IndexWatcher extends AssetWatcher
+class IndexWatcher extends AssetBuilder
     constructor: (@config)->
         super()
 

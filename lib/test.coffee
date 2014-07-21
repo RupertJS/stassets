@@ -12,6 +12,7 @@ app.use(stasset({
         "#{__dirname}/../test/cascade"
     ]
     deeplink: yes
+    verbose: yes
 }))
 
 loadFixture = (fixture)->
@@ -25,7 +26,7 @@ describe "DS Asset Middleware", ->
         setTimeout done, 50
 
     describe "Index", ->
-        it 'renders jade to html', (done)->
+        it.only 'renders jade to html', (done)->
             request(app)
             .get('/index.html')
             .set('Accept', 'text/html')
