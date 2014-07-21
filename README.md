@@ -184,13 +184,18 @@ just crazy.
 Stassets understands this directory layout, but can be configured to any other
 layout.
 
+## Cascading File System
+
+`stassets` has the concept of a Cascading File System. By creating a similar
+directory structure in several root directories, `stassets` users can quickly
+and easily implement a themeing or plugin system. To generate a cascading file
+system, `stassets` joins a list of root directories with a set of file patterns.
+Files in each root directory matching a pattern are joined, with files in higher
+priority root directories overwriting those with lower priority.
+
 ## Roadmap
 
-* Multi-language support
-    * Handle sourcemaps.
-    * Pass languages through different transpilers, then join.
-    * Allow plugin dependencies - let index.html inject hashes of other files.
-* Static Export Script
+* Allow plugin dependencies - let index.html inject hashes of other files.
 * Testing integration (karma)
 * Static static assets
     * Fonts
@@ -200,7 +205,6 @@ layout.
 * Ease configuration
     * Configure patterns at runtime
     * Document Asset Watcher Extension
-    * Toggle "Classic" mode (eww, gross).
 
 ## Changelog
 * **0.2.0** *2014-07-19* Implements Cascading File System.
