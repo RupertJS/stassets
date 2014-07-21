@@ -12,6 +12,7 @@ class AssetWatcher extends LogEmitter
         super()
 
         @watch new Mirror(
+            @config.root
             @pattern()
             @config.howMany
         )
@@ -45,7 +46,7 @@ class AssetWatcher extends LogEmitter
 
         @gaze.on 'ready', =>
             @gaze.watched (err, filelist = {})=>
-                return console.log err if err
+                return @printError('watch ready', err) if err
                 Object.keys(filelist).forEach (file)=>
                     @add file
                 @compile()
@@ -84,5 +85,7 @@ class AssetWatcher extends LogEmitter
 
     getPaths: -> []
     matches: (path)-> path in @getPaths()
+
+    compile: -> throw new Error 'Virtual Exception: Compile not overriden!'
 
 module.exports = AssetWatcher

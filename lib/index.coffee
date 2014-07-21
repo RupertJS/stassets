@@ -40,7 +40,7 @@ Stassets.DEFAULTS =
     verbose: no
     root: ['.']
     vendors:
-        prefix: "../bower_components"
+        prefix: "./bower_components"
         js: [ 'angular/angular.js' ]
         css: [ 'bootstrap/dist/css/*.css' ]
     livereload:
@@ -48,9 +48,11 @@ Stassets.DEFAULTS =
 
 middleware = (config)->
     stassets = new Stassets(config)
-    middleware.watchers = stassets.watchers
-    (req, res, next)->
+    fn = (req, res, next)->
         stassets.handle(req, res, next)
+    fn.watchers = stassets.watchers
+    fn.promise = stassets.promise
+    fn
 
 middleware.Stassets = Stassets
 

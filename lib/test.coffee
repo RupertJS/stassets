@@ -6,14 +6,16 @@ stasset = require './index'
 
 app = express()
 
-app.use(stasset({
+middleware = stasset({
     root: [
         "#{__dirname}/../test/assets",
         "#{__dirname}/../test/cascade"
     ]
     deeplink: yes
-    verbose: yes
-}))
+    verbose: no
+})
+console.log middleware.promise
+app.use middleware
 
 loadFixture = (fixture)->
     fs.readFileSync(
@@ -23,10 +25,10 @@ loadFixture = (fixture)->
 describe "DS Asset Middleware", ->
     before (done)->
         # Let the watchers compile
-        setTimeout done, 50
+        middleware.promise.fin done
 
     describe "Index", ->
-        it.only 'renders jade to html', (done)->
+        it 'renders jade to html', (done)->
             request(app)
             .get('/index.html')
             .set('Accept', 'text/html')
