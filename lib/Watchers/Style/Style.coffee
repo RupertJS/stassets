@@ -1,5 +1,5 @@
 fs = require 'graceful-fs'
-AssetWatcher = require './Asset'
+AssetWatcher = require '../Asset'
 q = require 'q'
 
 class StyleWatcher extends AssetWatcher

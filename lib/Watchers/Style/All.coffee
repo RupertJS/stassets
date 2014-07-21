@@ -1,4 +1,4 @@
-StyleWatcher = require '../Style'
+StyleWatcher = require './Style'
 
 class AllStyleWatcher extends StyleWatcher
     constructor: (@config)->
