@@ -38,22 +38,28 @@ class Mirror extends EventEmitter
         @gazeAt @pool = (GetPool(root) for root in @root)
 
     gazeAt: (pool)->
-        minmatch = (path)-> (pattern)-> minimatch path, pattern
+        Q.all pool.map (pond)=>
+            d = Q.defer()
+            pond.on 'ready', -> d.resolve()
+            d.promise
+        .then =>
+            @emit 'ready'
         pool.forEach (pond)=>
             pond.on 'error', (err)=> @emit 'error', err
-            pond.on 'ready', => @emit 'ready'
             pond.on 'all', (eventName, path)=>
-                @pattern
-                .filter(minmatch(path))
-                .forEach (pattern)=>
+                if @toWatch path
                     @emit 'all', eventMap[eventName], path
-                    @emit eventMap[eventName], path
+                    # @emit eventMap[eventName], path
+                    # TODO wait on amasad/sane#21
             for k, v of eventMap
-                pond.on k, (path)=> @emit v, path
+                do (k, v)=>
+                    pond.on k, (path)=>
+                        if @toWatch pond.root + '/' + path
+                            @emit v, path
+            return
+        @
 
-    toWatch: -> (filepath)=>
-        # console.log "Checking #{filepath} against #{@pattern}"
-        # @pattern[@howMany] (pattern)->
+    toWatch: (filepath)=>
         @pattern.some (pattern)->
             if pattern instanceof RegExp
                 if pattern.test filepath
@@ -87,7 +93,7 @@ class Mirror extends EventEmitter
                 dir = pond.dirRegistery[dirname]
                 Object.keys(dir).forEach (file)=>
                     path = "#{dirname}/#{file}"
-                    if @toWatch() path
+                    if @toWatch path
                         filelist[path] = true
 
         cb null, filelist
