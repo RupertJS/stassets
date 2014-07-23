@@ -13,9 +13,10 @@ class TemplateWatcher extends AssetWatcher
         .substr(1)
         .replace('.jade', '')
         .replace('/template', '')
+        .replace('\\', '/') # Fix for windows.
 
     getModuleName: (shortPath)->
-        module = shortPath.replace(/[\/\\]/g, '.') + '.template'
+        module = shortPath.replace(/\//g, '.') + '.template'
         if moduleRoot = @getModuleRoot()
             module = "#{moduleRoot}.#{module}"
         module
