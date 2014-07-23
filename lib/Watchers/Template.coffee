@@ -15,7 +15,7 @@ class TemplateWatcher extends AssetWatcher
         .replace('/template', '')
 
     getModuleName: (shortPath)->
-        module = shortPath.replace(/\//g, '.') + '.template'
+        module = shortPath.replace(/[\/\\]/g, '.') + '.template'
         if moduleRoot = @getModuleRoot()
             module = "#{moduleRoot}.#{module}"
         module
