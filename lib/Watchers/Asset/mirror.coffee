@@ -8,7 +8,6 @@ nb = require 'nextback'
 Watch = require('sane')
 minimatch = require 'minimatch'
 
-
 eventMap =
     add: 'added'
     added: 'added'
@@ -30,11 +29,6 @@ class Mirror extends EventEmitter
         unless @pattern? and @pattern instanceof Array
             throw new Error "No sane pattern; have #{@pattern}, need Array."
 
-        # if noGlob then extensions = @pattern
-
-        # @pond = GetPool root, extensions, noGlob
-        # @gazeAt gaze for gaze in @pond
-        # @gazeAt @gaze = new Gaze @pattern
         @gazeAt @pool = (GetPool(root) for root in @root)
 
     gazeAt: (pool)->
@@ -77,16 +71,6 @@ class Mirror extends EventEmitter
 
     watched: (cb)->
         cb = nb cb
-        # @gaze.watched (err, matched = {})=>
-        #     return cb err if err
-        #     filelist = {}
-        #     for _, files of matched
-        #         files
-        #         .filter(@toWatch())
-        #         .forEach (filepath)=>
-        #             filelist[filepath] = yes
-        #     cb null, filelist
-
         filelist = {}
         @pool.forEach (pond)=>
             files = Object.keys(pond.dirRegistery).forEach (dirname)=>
