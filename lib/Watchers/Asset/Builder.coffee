@@ -34,15 +34,15 @@ class AssetBuilder extends AssetWatcher
 
         renderMap = readMap.map (_)=>
             d = Q.defer()
-            _.then ([__, loader])=>
+            _.catch ([__, loader])=>
+                @printError "read `#{loader.path}`", @formatReadError __
+                Q ''
+            .then ([__, loader])=>
                 @printStart loader
                 try
                     d.resolve @render __, loader.path
                 catch err
                     d.reject err
-            _.catch ([__, loader])=>
-                @printError "read `#{loader.path}`", @formatReadError __
-                Q ''
             d.promise
         Q.all(renderMap)
         .catch (__)=>
