@@ -59,17 +59,18 @@ class ScriptWatcher extends SourcemapWatcher
         extension = path.substr(path.lastIndexOf('.') + 1)
         ScriptWatcher.renderers[extension].call(this, code, path)
 
-    concat: (_)->
-        {content, sourceMap} = super _
-        return Q {content, sourceMap} unless @config.compressJS
-
+    minify: ({content, sourceMap})->
         content = ngmin.annotate content
         result = UglifyJS.minify content,
             fromString: true
             inSourceMap: sourceMap
             outSourceMap: "app.js.map"
+        {content: result.code, sourceMap: result.map}
 
-        Q {content: result.code, sourceMap: result.map}
+    concat: (_)->
+        res = super _ # {content, sourceMap}
+        res @minify res if @config.compressJS
+        Q res
 
 ScriptWatcher.renderers =
     js: (content, path)->
