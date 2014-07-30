@@ -1,6 +1,6 @@
 fs = require 'graceful-fs'
 Path = require 'path'
-EventEmitter = require('events').EventEmitter
+EventEmitter = require('./LogEmitter')
 Q = require 'q'
 nb = require 'nextback'
 # Gaze = require('gaze').Gaze
@@ -23,13 +23,19 @@ GetPool = (root, extensions, noGlob)->
     Pool[root] or= new Watch root
 
 class Mirror extends EventEmitter
-    constructor: (@root, @pattern, @howMany = 'some')->
+    constructor: (@root, @pattern, @config = {verbose: no, howMany: 'some'})->
+        super()
         unless @root? and @root instanceof Array
             throw new Error "No sane roots; have #{@root}, need Array"
         unless @pattern? and @pattern instanceof Array
             throw new Error "No sane pattern; have #{@pattern}, need Array."
 
-        @gazeAt @pool = (GetPool(root) for root in @root)
+        @warnings = {}
+
+        try
+            @gazeAt @pool = (GetPool(root) for root in @root)
+        catch e
+            @handleError e
 
     gazeAt: (pool)->
         Q.all pool.map (pond)=>
@@ -52,6 +58,28 @@ class Mirror extends EventEmitter
                             @emit v, path
             return
         @
+
+    handleError: (err)->
+        @err err
+        if err.code is 'EMFILE'
+            unless @warnings.EMFILE
+                @log
+                    code: EMFILE
+                    message: """
+                    The operating system does not have enough file handles to
+                    enumerate all files. On linux or OSX, try doubling the
+                    available file handles with
+                    `ulimit -n $(( $(ulimit -n ) * 2))`
+                    """
+            @warnings.EMFILE = yes
+        if err.code is 'ENOENT'
+            unless @warnings.ENOENT
+                @log
+                    err: err
+                    message: """
+                    A watch directory didn't exist.
+                    """
+            @warnings.ENOENT = yes
 
     toWatch: (filepath)=>
         @pattern.some (pattern)->

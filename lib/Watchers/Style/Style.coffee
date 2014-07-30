@@ -18,7 +18,7 @@ class StyleWatcher extends AssetWatcher
             .use(nib())
             .import('nib')
 
-        @getImports().forEach (_1)-> compiler.include(_1)
+        @getImports().forEach (_1)-> compiler.import(_1)
 
 
         compiler.render (err, css)=>
