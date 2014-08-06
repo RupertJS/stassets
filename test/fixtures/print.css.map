@@ -1,0 +1,1 @@
+{"version":3,"file":"/print.css","sources":["/Users/southerd/devel/southerd/libraries/stassets/test/assets/main/print.styl"],"names":[],"mappings":"AAAA;AACI;AACA","sourcesContent":["body\n    width 8in\n    margin 0.25in\n"]}

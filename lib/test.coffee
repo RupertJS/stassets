@@ -82,6 +82,12 @@ describe "DS Asset Middleware", ->
             .expect(loadFixture('print.css'))
             .end(done)
 
+        it 'generates source maps', (done)->
+            request(app)
+            .get('/all.css.map')
+            .expect(200)
+            .expect(loadFixture('all.css.map'))
+            .end(done)
 
     describe "Application", ->
         it 'loads application code', (done)->

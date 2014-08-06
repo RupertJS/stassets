@@ -40,7 +40,7 @@ class SourcemapWatcher extends AssetWatcher
 
         {content, sourceMap}
 
-    finish: (_)->
+    finish: (_ = {content: ''})->
         @printSuccess()
         @content = _.content
         @map = JSON.stringify _.sourceMap
