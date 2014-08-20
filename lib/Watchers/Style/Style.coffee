@@ -14,23 +14,26 @@ class StyleWatcher extends SourcemapWatcher
 
     render: (code, path)->
         compiler = require('stylus')(code)
-            .set('filename', path)
+            .set('filename', @pathpart path)
             .use(nib())
             .import('nib')
-            .set('sourcemap', {rootUrl: @pathpart path})
+            .set('sourcemap', { comment: no })
 
         @getImports().forEach (_1)-> compiler.import(_1)
 
         try
             content = compiler.render()
             sourceMap = compiler.sourcemap
-            content = content.replace(/^\/\*# sourceMappingURL=.*$/m, '')
-            sourceMap.sourcesContent = []
-            for file in sourceMap.sources
-                if file is path
-                    sourceMap.sourcesContent.push code
+
+            sourceMap.sources[0] = @pathpart path
+            sourceMap.sourcesContent = sourceMap.sources.map (file, i)->
+                if i is 0
+                    code
                 else
-                    sourceMap.sourcesContent.push fs.readFileSync file, 'utf-8'
+                    fs.readFileSync file, 'utf-8'
+
+            @log {msg: "Source map", sourceMap}
+
             Q {content, sourceMap}
         catch err
             Q.reject err

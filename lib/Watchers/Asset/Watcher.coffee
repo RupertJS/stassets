@@ -68,9 +68,7 @@ class AssetWatcher extends LogEmitter
         delete @filelist[filepath]
 
     pathpart: (path)->
-        for root in @config.root
-            path = path.replace(root, '')
-        path
+        @config.root.reduce ((path, root)-> path.replace(root, '')), path
 
     ###
     This should return an array of files in the correct insert order.

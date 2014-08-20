@@ -20,7 +20,7 @@
     "sane": "^0.5.4",
     "sha1": "^1.1.0",
     "source-map": "^0.1.34",
-    "stylus": "LearnBoost/stylus#feature-source-maps",
+    "stylus": "^0.48.0",
     "tiny-lr": "0.0.9",
     "uglify-js": "^2.4.15"
   },
