@@ -32,9 +32,7 @@ class StyleWatcher extends SourcemapWatcher
                 else
                     fs.readFileSync file, 'utf-8'
 
-            @log {msg: "Source map", sourceMap}
-
-            Q {content, sourceMap}
+            Q {content, sourceMap, path}
         catch err
             Q.reject err
 

@@ -6,8 +6,6 @@
   "main": "lib/index.js",
   "dependencies": {
     "coffee-script": "^1.7.1",
-    "combine-source-map": "^0.3.0",
-    "convert-source-map": "^0.3.4",
     "esprima": "^1.2.2",
     "glob": "^4.0.2",
     "graceful-fs": "^3.0.2",

@@ -9,8 +9,10 @@ app.use(stasset({
     root: [__dirname + "/../assets", __dirname + "/../cascade"],
     vendors: {
         prefix: __dirname + "/../../bower_components",
-        js: [ 'angular/angular.js' ],
-        css: [ 'bootstrap/dist/css/bootstrap.css' ]
+        js: [ 'angular/angular.min.js' ],
+        jsMaps: [ 'angular/angular.min.js.map' ],
+        css: [ 'bootstrap/dist/css/bootstrap.css' ],
+        cssMaps: [ 'bootstrap/dist/css/bootstrap.css.map' ]
     }
 }));
 app.listen(8989);

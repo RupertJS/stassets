@@ -90,7 +90,7 @@ ScriptWatcher.renderers =
         sourceMap.sourcesContent = [content]
 
         content = "(function(){\n#{content}\n}).call(this);\n"
-        {content, sourceMap}
+        {content, sourceMap, path}
 
     coffee: (code, path)->
         options =
@@ -104,6 +104,6 @@ ScriptWatcher.renderers =
         content = build.js#.replace(/\n/gm, '')
         sourceMap = JSON.parse build.v3SourceMap
         sourceMap.sourcesContent = [code]
-        {content, sourceMap}
+        {content, sourceMap, path}
 
 module.exports = ScriptWatcher
