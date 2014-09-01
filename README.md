@@ -51,8 +51,8 @@ your project is 7 files.
 
 ## Usage
 
-stassets is built as an express middleware. With the default project layout,
-the easiest server looks like this:
+stassets is built as either an express middleware or a hapi plugin. With the
+default project layout, the easiest server looks like this:
 
 ```javascript
 var express = require('express')
@@ -181,7 +181,7 @@ controllers, templates, and tests are all next to one another. Don't drive five
 directories up and three over to get to a file for the same component. That's
 just crazy.
 
-Stassets understands this directory layout, but can be configured to any other
+stassets understands this directory layout, but can be configured to any other
 layout.
 
 ## Cascading File System
@@ -200,13 +200,12 @@ priority root directories overwriting those with lower priority.
 * Static static assets
     * Fonts
     * Images
-* Utilities
-    * Configurable logging
 * Ease configuration
     * Configure patterns at runtime
     * Document Asset Watcher Extension
 
 ## Changelog
+* **0.3.0** *2014-09-01* Register as [hapi.js] plugin.
 * **0.2.7** *2014-08-20* Sourcemaps for Stylus files.
 * **0.2.6** *2014-08-12* Many small bugfixes in .2 through .6.
 * **0.2.1** *2014-07-21* Replaced Gaze with Sane.
@@ -216,3 +215,5 @@ for pure static server (also great for tests). *This is likely to move to
 grunt-stassets in the very near future!*
 * **0.1** *2014-06-12* Understands the basic project structure. Works great for
 rapid development.
+
+[hapi.js]: http://hapijs.com/
