@@ -34,7 +34,6 @@ class Stassets
                 return watcher.handle(req, res, next)
         next()
 
-
     hapi: (plugin)->
         for watcher in @watchers
             watcher.hapi plugin
