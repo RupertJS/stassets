@@ -5,9 +5,9 @@ AssetWatcher = require '../Sourcemap'
 minimatch = require 'minimatch'
 
 R_SOURCE_MAP_COMMENT = ///
-(?:/\*|//) # Opening comment
+(?:/\*|//|\#) # Opening comment (css or js or coffee)
 \#\ssourceMappingURL=([^\s]+) # URL
-(?:\s+\*/)? # Optional close comment
+(?:\s+\*/)? # Optional close comment (css)
 ///
 
 class VendorWatcher extends AssetWatcher
@@ -43,7 +43,7 @@ class VendorWatcher extends AssetWatcher
                 # Need to go
                 noMin = path.replace '.min', ''
                 mapPath = "#{noMin}.map"
-                if FS.statSync mapPath
+                if FS.existsSync mapPath
                     mapPath
                 else
                     false
@@ -53,7 +53,7 @@ class VendorWatcher extends AssetWatcher
                 noMin = path.replace '.min', ''
                 [_, file, ext] = noMin.match(/^(.*)\.([^\.]+)$/)
                 mapPath = "#{file}.map.#{ext}"
-                if FS.statSync mapPath
+                if FS.existsSync mapPath
                     mapPath
                 else
                     false
