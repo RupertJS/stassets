@@ -207,6 +207,8 @@ priority root directories overwriting those with lower priority.
     * Document Asset Watcher Extension
 
 ## Changelog
+* **0.2.7** *2014-08-20* Sourcemaps for Stylus files.
+* **0.2.6** *2014-08-12* Many small bugfixes in .2 through .6.
 * **0.2.1** *2014-07-21* Replaced Gaze with Sane.
 * **0.2.0** *2014-07-19* Implements Cascading File System.
 * **0.1.4** *2014-06-16* Includes Grunt task to save compiled assets to disk,

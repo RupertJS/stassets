@@ -4,7 +4,10 @@ class LogEmitter extends EventEmitter
     constructor: ->
         super()
     logString: (_)->
-        "#{(new Date()).toISOString()} #{@constructor.name}:: #{_}"
+        timestamp = (new Date()).toISOString()
+        caller = @constructor.name
+        value = JSON.stringify _
+        "#{timestamp} #{caller}:: #{value}"
     logObject: (_)->
         timestamp = new Date().toISOString()
         name = @constructor.name

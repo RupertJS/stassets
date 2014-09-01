@@ -43,9 +43,9 @@ Stassets.DEFAULTS =
     verbose: no
     root: ['.']
     vendors:
-        prefix: "./bower_components"
-        js: [ 'angular/angular.js' ]
-        css: [ 'bootstrap/dist/css/*.css' ]
+        prefix: "./"
+        js: [ '' ]
+        css: [ '' ]
     livereload:
         port: 35729
 

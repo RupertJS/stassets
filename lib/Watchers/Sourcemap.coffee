@@ -1,6 +1,4 @@
 AssetWatcher = require './Asset'
-convert = require 'convert-source-map'
-combine = require 'combine-source-map'
 
 class SourcemapWatcher extends AssetWatcher
     constructor: ->
@@ -25,37 +23,26 @@ class SourcemapWatcher extends AssetWatcher
     getPaths: -> @files
     concat: (_)->
         content = _.map((f)->f.content).join '\n'
-        sourceMap = null
 
-        try
-            lastOffset = 0
-            bundle = combine.create(@files[0])
-            _.map (f)->
-                comment = convert.fromObject(f.sourceMap).toComment()
-                # + 1 for the '\n' in the join above
-                newLines = (f.content.match(/\n/g)||[]).length + 1
-                source = "#{f.content}\n#{comment}"
-                sourceFile = f.sourceMap.sources[0]
-                {source, sourceFile, newLines}
-            .forEach (f, i)->
-                offset = {line: lastOffset}
+        lastOffset = 0
+        sections = _.map (f)->
+            offset = {line: lastOffset, column: 0}
+            lastOffset += (f.content.match(/\n/g)||[]).length + 1
+            {map: f.sourceMap, offset }
 
-                lastOffset += f.newLines
-                delete f.newLines
+        sourceMap = {
+            version: 3
+            file: @files[0]
+            sections
+        }
 
-                bundle.addFile f, offset
-
-            base64 = bundle.base64()
-            sourceMap = convert.fromBase64(base64).toObject()
-        catch err
-            @log {warning: "Failed combining source maps.", err}
         {content, sourceMap}
 
     finish: (_ = {content: ''})->
         @printSuccess()
         @content = _.content
         @hasMap = _.sourceMap?
-        @map = JSON.stringify _.sourceMap if @hasMap
+        @map = ')]}\n' + JSON.stringify _.sourceMap if @hasMap
         @_defer.resolve()
 
 module.exports = SourcemapWatcher
