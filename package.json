@@ -1,10 +1,11 @@
 {
   "name": "stassets",
-  "version": "0.2.7",
+  "version": "0.3.0",
   "repository": "https://github.com/DavidSouther/stassets.git",
   "description": "Static compiling express middleware.",
   "main": "lib/index.js",
   "dependencies": {
+    "angular-builds": "https://github.com/DanTup/angular-builds/tarball/1.2.14",
     "coffee-script": "^1.7.1",
     "esprima": "^1.2.2",
     "glob": "^4.0.2",

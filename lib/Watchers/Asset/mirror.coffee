@@ -25,7 +25,7 @@ GetPool = (root, extensions, noGlob)->
 class Mirror extends EventEmitter
     constructor: (@root, @pattern, @config = {verbose: no, howMany: 'some'})->
         super()
-        unless @root? and @root instanceof Array
+        unless @root? and @root instanceof Array or @config.noRoot is true
             throw new Error "No sane roots; have #{@root}, need Array"
         unless @pattern? and @pattern instanceof Array
             throw new Error "No sane pattern; have #{@pattern}, need Array."
@@ -33,7 +33,13 @@ class Mirror extends EventEmitter
         @warnings = {}
 
         try
-            @gazeAt @pool = (GetPool(root) for root in @root)
+            @pool =
+                if @config.noRoot is true
+                    root = @root[0] # ONLY use the first root
+                    (GetPool("#{pattern}") for pattern in @pattern)
+                else
+                    (GetPool(root) for root in @root)
+            @gazeAt @pool
         catch e
             @handleError e
 

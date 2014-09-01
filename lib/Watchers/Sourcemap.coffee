@@ -13,6 +13,13 @@ class SourcemapWatcher extends AssetWatcher
             res.set('SourceMap', req.path + '.map') if @hasMap
             res.send(@content)
 
+    hapiHandle: (request, reply)->
+        if request.path.substr(-4) is '.map' and @hasMap
+            reply(@map).type('application/json')
+        else
+            reply = reply(@content).type(@type())
+            reply.header('SourceMap', request.path + '.map') if @hasMap
+
     getPaths: -> @files
     concat: (_)->
         content = _.map((f)->f.content).join '\n'

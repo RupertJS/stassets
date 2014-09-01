@@ -14,6 +14,19 @@ class AssetBuilder extends AssetWatcher
     handle: (req, res, next)->
         res.status(200).set('Content-Type', @type()).send(@content)
 
+    hapi: (plugin)->
+        @plugin = plugin
+        @useHapi()
+        for path in @getPaths()
+            @plugin.route
+                method: 'GET'
+                path: path
+                handler: (request, reply)=>
+                    @hapiHandle request, reply
+
+    hapiHandle: (request, reply)->
+        reply(@content).type(@type())
+
     hash: -> require('sha1')(@content)
 
     ###
