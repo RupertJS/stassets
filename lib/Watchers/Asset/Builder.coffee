@@ -15,8 +15,10 @@ class AssetBuilder extends AssetWatcher
         res.status(200).set('Content-Type', @type()).send(@content)
 
     hapi: (plugin)->
+        @plugin = plugin
+        @useHapi()
         for path in @getPaths()
-            plugin.route
+            @plugin.route
                 method: 'GET'
                 path: path
                 handler: (request, reply)=>
