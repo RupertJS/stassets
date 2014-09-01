@@ -18,6 +18,7 @@ class VendorWatcher extends AssetWatcher
         @config.vendors.prefix or= './'
         @config = JSON.parse JSON.stringify @config # Quick clone hack
         @config.root = [@config.vendors.prefix]
+        @config.noRoot = true
         @files = @getPaths()
 
         super()
@@ -65,7 +66,8 @@ class VendorWatcher extends AssetWatcher
                     sourceMap = JSON.parse FS.readFileSync _, 'utf-8'
                     return sourceMap
             catch err
-                @err err
+                # @err err
+                undefined
         return _
 
     render: (content, path)->

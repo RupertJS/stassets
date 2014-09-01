@@ -11,10 +11,15 @@ middleware = stasset({
         "#{__dirname}/../test/assets",
         "#{__dirname}/../test/cascade"
     ]
+    vendors:
+        prefix: __dirname + "/../node_modules"
+        js: [ 'angular-builds/angular.min.js' ]
+        jsMaps: [ 'angular/angular.min.js.map' ]
+        css: [ 'bootstrap/dist/css/bootstrap.css' ]
+        cssMaps: [ 'bootstrap/dist/css/bootstrap.css.map' ]
     deeplink: yes
     verbose: no
 })
-console.log middleware.promise
 app.use middleware
 
 loadFixture = (fixture)->
@@ -123,13 +128,30 @@ describe "DS Asset Middleware", ->
             .set('Accept', 'application/javascript')
             .expect(200)
             .expect('Content-Type', /javascript/)
-            # .expect(loadFixture('vendors.js'))
+            .expect('SourceMap', /vendors\.js\.map/)
+            .expect(loadFixture('vendors.js'))
+            .end(done)
+
+        it 'loads as good a stylesheet as possible', (done)->
+            request(app)
+            .get('/vendors.js.map')
+            .expect(200)
+            .expect(loadFixture('vendors.js.map'))
             .end(done)
 
     describe "Vendor Styles", ->
         it 'loads a joined stylesheet', (done)->
             request(app)
             .get('/vendors.css')
-            .expect(200).expect('Content-Type', /css/)
-            # .expect(loadFixture('vendors.css'))
+            .expect(200)
+            .expect('Content-Type', /css/)
+            .expect('SourceMap', /vendors\.css\.map/)
+            .expect(loadFixture('vendors.css'))
+            .end(done)
+
+        it 'loads as good a stylesheet as possible', (done)->
+            request(app)
+            .get('/vendors.css.map')
+            .expect(200)
+            .expect(loadFixture('vendors.css.map'))
             .end(done)
