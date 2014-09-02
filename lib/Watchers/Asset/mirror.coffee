@@ -61,7 +61,7 @@ class Mirror extends EventEmitter
                 do (k, v)=>
                     pond.on k, (path)=>
                         if @toWatch pond.root + '/' + path
-                            @emit v, path
+                            @emit v, pond.root + '/' + path
             return
         @
 

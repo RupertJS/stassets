@@ -60,7 +60,7 @@ class AssetWatcher extends LogEmitter
             @log {code, event}
 
     add: (filepath)->
-        if fs.statSync(filepath).isFile()
+        # if fs.existsSync(filepath) and fs.statSync(filepath).isFile()
             @filelist[filepath] = yes
 
     remove: (filepath)->
