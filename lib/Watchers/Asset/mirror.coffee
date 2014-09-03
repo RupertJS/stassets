@@ -20,7 +20,11 @@ Pool = {}
 GetPool = (root, extensions, noGlob)->
     root = Path.resolve process.cwd(), root
     root = './' if root is '' # Prevent enumerating fs root when run in cwd.
-    Pool[root] or= new Watch root
+    try
+        Pool[root] or= new Watch root
+    catch err
+        err.root = root
+        throw err
 
 class Mirror extends EventEmitter
     constructor: (@root, @pattern, @config = {verbose: no, howMany: 'some'})->
@@ -32,16 +36,14 @@ class Mirror extends EventEmitter
 
         @warnings = {}
 
-        try
-            @pool =
-                if @config.noRoot is true
-                    root = @root[0] # ONLY use the first root
-                    (GetPool("#{pattern}") for pattern in @pattern)
-                else
-                    (GetPool(root) for root in @root)
-            @gazeAt @pool
-        catch e
-            @handleError e
+        @pool = []
+        @roots = if @config.noRoot is true then @pattern else @root
+        for file in @roots
+            try
+                @pool.push GetPool file
+            catch e
+                @handleError e
+        @gazeAt @pool
 
     gazeAt: (pool)->
         Q.all pool.map (pond)=>
@@ -77,6 +79,7 @@ class Mirror extends EventEmitter
                     available file handles with
                     `ulimit -n $(( $(ulimit -n ) * 2))`
                     """
+                    root: err.root
             @warnings.EMFILE = yes
         if err.code is 'ENOENT'
             unless @warnings.ENOENT
@@ -85,6 +88,7 @@ class Mirror extends EventEmitter
                     message: """
                     A watch directory didn't exist.
                     """
+                    root: err.root
             @warnings.ENOENT = yes
 
     toWatch: (filepath)=>

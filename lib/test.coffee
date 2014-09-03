@@ -132,7 +132,7 @@ describe "DS Asset Middleware", ->
             .expect(loadFixture('vendors.js'))
             .end(done)
 
-        it 'loads as good a stylesheet as possible', (done)->
+        it 'loads as good a sourcemap as possible', (done)->
             request(app)
             .get('/vendors.js.map')
             .expect(200)
@@ -149,7 +149,7 @@ describe "DS Asset Middleware", ->
             .expect(loadFixture('vendors.css'))
             .end(done)
 
-        it 'loads as good a stylesheet as possible', (done)->
+        it 'loads as good a sourcemap as possible', (done)->
             request(app)
             .get('/vendors.css.map')
             .expect(200)

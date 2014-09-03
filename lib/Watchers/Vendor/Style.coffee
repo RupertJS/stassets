@@ -9,7 +9,7 @@ class VendorStyleWatcher extends VendorWatcher
         @config.vendors.cssMaps or= []
         super()
 
-    pattern: -> super @config.vendors?.css or []
+    pattern: -> super @config.vendors.css
     getMaps: -> @config.vendors.cssMaps
     type: -> "text/css"
 

@@ -16,12 +16,21 @@ class VendorWatcher extends AssetWatcher
             js: []
             css: []
         @config.vendors.prefix or= './'
+        unless @config.vendors.prefix.length? and @config.vendors.prefix.map?
+            @config.vendors.prefix = [@config.vendors.prefix]
         @config = JSON.parse JSON.stringify @config # Quick clone hack
-        @config.root = [@config.vendors.prefix]
+        @config.root = @config.vendors.prefix
         @config.noRoot = true
         @files = @getPaths()
 
         super()
+
+    pattern: (patterns)->
+        fullist = []
+        for root in @config.vendors.prefix
+            for pattern in patterns
+                fullist.push Path.normalize "#{root}/#{pattern}"
+        fullist
 
     findSourceMap: (content, path)->
         techniques =

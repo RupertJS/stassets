@@ -9,7 +9,7 @@ class VendorScriptWatcher extends VendorWatcher
         @config.vendors.jsMaps or= []
         super()
 
-    pattern: -> super @config.vendors?.js or []
+    pattern: -> super @config.vendors.js
     getMaps: -> @config.vendors.jsMaps
     type: -> "application/javascript"
 
