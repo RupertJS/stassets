@@ -81,6 +81,13 @@ class VendorWatcher extends AssetWatcher
 
     render: (content, path)->
         sourceMap = @findSourceMap(content, path)
+        if sourceMap and not sourceMap.sourcesContent
+            # Try to find the original
+            origPath = Path.join Path.dirname(path), sourceMap.sources[0]
+            if FS.existsSync origPath
+                sourceMap.sourcesContent = [
+                    FS.readFileSync origPath, 'utf-8'
+                ]
         content = content.replace R_SOURCE_MAP_COMMENT, ''
         Q { content, sourceMap, path }
 
