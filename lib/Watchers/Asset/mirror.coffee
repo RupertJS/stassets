@@ -114,7 +114,7 @@ class Mirror extends EventEmitter
             files = Object.keys(pond.dirRegistery).forEach (dirname)=>
                 dir = pond.dirRegistery[dirname]
                 Object.keys(dir).forEach (file)=>
-                    path = "#{dirname}/#{file}"
+                    path = Path.join dirname, file
                     if @toWatch path
                         filelist[path] = true
 

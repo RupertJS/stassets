@@ -12,8 +12,8 @@ class TemplateWatcher extends AssetWatcher
         @pathpart(path)
         .substr(1)
         .replace('.jade', '')
+        .replace(/\\/g, '/') # Normalize pathing.
         .replace('/template', '')
-        .replace('\\', '/') # Fix for windows.
 
     getModuleName: (shortPath)->
         module = shortPath.replace(/\//g, '.') + '.template'
