@@ -1,8 +1,11 @@
 EventEmitter = require('events').EventEmitter
+debug = require('debug')
 
 class LogEmitter extends EventEmitter
     constructor: ->
         super()
+        @debug = debug("stassets:#{@constructor.name}")
+        @error = debug("stassets:ERROR:#{@constructor.name}")
     logString: (_)->
         timestamp = (new Date()).toISOString()
         caller = @constructor.name
@@ -15,12 +18,10 @@ class LogEmitter extends EventEmitter
         {timestamp, name, message}
     log: (_)->
         @emit 'log', @logObject _
-        return unless @config.verbose
-        console.log @logString _
+        @debug _
     err: (_)->
         @emit 'err', @logObject _
-        return unless @config.verbose
-        console.error @logString _
+        @error
     printStart: (loader)->
         @log "Rendering: #{loader.path}"
     printError: (where, message)->
