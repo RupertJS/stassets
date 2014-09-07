@@ -18,12 +18,13 @@ class SourcemapWatcher extends AssetWatcher
         content = _.map((f)->f.content).join '\n'
 
         lastOffset = 0
-        sections = _.filter (f)->
-            f.sourceMap
+        sections = _
         .map (f)->
             offset = {line: lastOffset, column: 0}
             lastOffset += (f.content.match(/\n/g)||[]).length + 1
             {map: f.sourceMap, offset }
+        .filter (f)->
+            f.map
 
         sourceMap = {
             version: 3
