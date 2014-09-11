@@ -193,21 +193,83 @@ system, `stassets` joins a list of root directories with a set of file patterns.
 Files in each root directory matching a pattern are joined, with files in higher
 priority root directories overwriting those with lower priority.
 
-## Roadmap
+## Configuration
 
-* Allow plugin dependencies - let index.html inject hashes of other files.
-* Testing integration (karma)
-* Static static assets
-    * Fonts
-    * Images
-* Utilities
-    * Configurable logging
-* Ease configuration
-    * Configure patterns at runtime
-    * Document Asset Watcher Extension
+***WIP*** These configuration options are used to extend and customize at
+various places. Until 1.0, these may change subtly. They will not be stable
+until 1.0.
+
+### `root`
+
+Required. String or Array<String>.
+./index.coffee:11:        @config.root = [@config.root] unless @config.root instanceof Array
+
+### `livereload`
+./index.coffee:28:        unless @config.livereload is no
+./index.coffee:29:            @livereload = new LR @config.livereload
+
+#### `livereload.port`
+
+### `deeplink`
+./Watchers/Index.coffee:12:        if @config.deeplink
+
+### `types`
+./Watchers/Script.coffee:15:        @config.types = @config.types || [
+
+### `additionalTypes`
+
+### `typeList`
+./Watchers/Script.coffee:22:        ].concat(@config.additionalTypes or [])
+./Watchers/Script.coffee:23:        @config.typeList = @config.typeList or [
+./Watchers/Script.coffee:26:        ].concat(@config.additionalTypeList or [])
+./Watchers/Script.coffee:30:        prefix = (_)=> "**/#{_}.{#{@config.typeList.join(',')}}"
+
+### `compressJS`
+./Watchers/Script.coffee:72:        res @minify res if @config.compressJS
+
+
+./Watchers/Style/Style.coffee:40:        if @config.vendors?.stylus?
+./Watchers/Style/Style.coffee:41:            @config.vendors.stylus.map (_1)=>
+./Watchers/Style/Style.coffee:42:                @config.vendors.prefix + '/' + _1
+./Watchers/Style/Style.coffee:48:        .concat(@config.root.map (_1)-> "#{_1}/stylus/definitions/variables")
+./Watchers/Style/Style.coffee:49:        .concat(@config.root.map (_1)-> "#{_1}/stylus/definitions/mixins")
+
+
+### `templateModuleRoot`
+./Watchers/Template.coffee:24:    getModuleRoot: -> @config.templateModuleRoot
+
+### `vendors`
+
+#### `vendors.prefix`
+./Watchers/Vendor/Vendor.coffee:15:        @config.vendors or=
+./Watchers/Vendor/Vendor.coffee:18:        @config.vendors.prefix or= './'
+./Watchers/Vendor/Vendor.coffee:19:        unless @config.vendors.prefix.length? and @config.vendors.prefix.map?
+./Watchers/Vendor/Vendor.coffee:20:            @config.vendors.prefix = [@config.vendors.prefix]
+./Watchers/Vendor/Vendor.coffee:22:        @config.root = @config.vendors.prefix
+./Watchers/Vendor/Vendor.coffee:23:        @config.noRoot = true
+./Watchers/Vendor/Vendor.coffee:30:        for root in @config.vendors.prefix
+./Watchers/Vendor/Vendor.coffee:40:                    smResolvedPath = Path.join @config.vendors.prefix, smPath
+
+#### `vendors.js`
+#### `vendors.jsMaps`
+./Watchers/Vendor/Script.coffee:7:        @config.vendors or= {}
+./Watchers/Vendor/Script.coffee:8:        @config.vendors.js or= []
+./Watchers/Vendor/Script.coffee:9:        @config.vendors.jsMaps or= []
+./Watchers/Vendor/Script.coffee:12:    pattern: -> super @config.vendors.js
+./Watchers/Vendor/Script.coffee:13:    getMaps: -> @config.vendors.jsMaps
+
+#### `vendors.css`
+#### `vendors.cssMaps`
+./Watchers/Vendor/Style.coffee:7:        @config.vendors or= {}
+./Watchers/Vendor/Style.coffee:8:        @config.vendors.css or= []
+./Watchers/Vendor/Style.coffee:9:        @config.vendors.cssMaps or= []
+./Watchers/Vendor/Style.coffee:12:    pattern: -> super @config.vendors.css
+./Watchers/Vendor/Style.coffee:13:    getMaps: -> @config.vendors.cssMaps
 
 ## Changelog
-* **0.2.13** *2014-09-11* Bug fixes. See commit log.
+* **0.2.13** *2014-09-11* Documentation pass.
+* **0.2.12** *2014-09-07* [debug][https://www.npmjs.org/package/debug] for logs.
+* **0.2.11** *2014-09-05* Bug fixes. See commit log.
 * **0.2.7** *2014-08-20* Sourcemaps for Stylus files.
 * **0.2.6** *2014-08-12* Many small bugfixes in .2 through .6.
 * **0.2.1** *2014-07-21* Replaced Gaze with Sane.
