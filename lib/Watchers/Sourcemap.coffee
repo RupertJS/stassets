@@ -41,4 +41,6 @@ class SourcemapWatcher extends AssetWatcher
         @map = ')]}\n' + JSON.stringify _.sourceMap if @hasMap
         @_defer.resolve()
 
+    failedRender: -> {content: '', sourceMap: null}
+
 module.exports = SourcemapWatcher

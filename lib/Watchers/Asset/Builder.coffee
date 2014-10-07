@@ -42,15 +42,16 @@ class AssetBuilder extends AssetWatcher
                 try
                     d.resolve @render __, loader.path
                 catch err
-                    d.reject err
+                    message = @formatRenderError err
+                    @printError 'render', message
+                    console.log message
+                    d.resolve @failedRender()
             d.promise
         Q.all(renderMap)
-        .catch (__)=>
-            @printError 'render', @formatRenderError __
-            Q ''
         .then((_)=> Q @concat _)
         .catch (__)=>
             @printError 'concat', @formatConcatError __
+            Q ''
         .then((_)=> @finish(_))
         .done()
 
@@ -64,8 +65,11 @@ class AssetBuilder extends AssetWatcher
         @emit 'Compiled', {name: @constructor.name, files: @getPaths()}
         @_defer.resolve()
 
+    failedRender: -> ''
+
     formatReadError: (error, loader)-> error
-    formatRenderError: (error, loader)-> error
+    formatRenderError: (error, loader)->
+        error.toString() # Assume the compiler is nice
     formatConcatError: (error)-> error
 
 module.exports = AssetBuilder

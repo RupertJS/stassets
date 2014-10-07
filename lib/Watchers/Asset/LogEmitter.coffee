@@ -21,7 +21,7 @@ class LogEmitter extends EventEmitter
         @debug _
     err: (_)->
         @emit 'err', @logObject _
-        @error
+        @error _
     printStart: (loader)->
         @log "Rendering: #{loader.path}"
     printError: (where, message)->

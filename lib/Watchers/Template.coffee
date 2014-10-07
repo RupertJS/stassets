@@ -48,4 +48,7 @@ class TemplateWatcher extends AssetWatcher
         });
         """
 
+    formatRenderError: (error)->
+        error.toLocaleString()
+
 module.exports = TemplateWatcher
