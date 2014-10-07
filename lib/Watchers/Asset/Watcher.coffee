@@ -6,7 +6,8 @@ Mirror = require './mirror'
 class AssetWatcher extends LogEmitter
     constructor: ->
         @filelist = {}
-        @config = @config or {verbose: no, howMany: 'some'}
+        @config or= {verbose: no, howMany: 'some'}
+
         @config.root = (@config.root or ['./']).map Path.normalize
 
         super()

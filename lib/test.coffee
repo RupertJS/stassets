@@ -139,19 +139,19 @@ describe "DS Asset Middleware", ->
             .expect(loadFixture('vendors.js.map'))
             .end(done)
 
-    describe "Vendor Styles", ->
-        it 'loads a joined stylesheet', (done)->
-            request(app)
-            .get('/vendors.css')
-            .expect(200)
-            .expect('Content-Type', /css/)
-            .expect('SourceMap', /vendors\.css\.map/)
-            .expect(loadFixture('vendors.css'))
-            .end(done)
+        describe "Styles", ->
+            it 'loads a joined stylesheet', (done)->
+                request(app)
+                .get('/vendors.css')
+                .expect(200)
+                .expect('Content-Type', /css/)
+                .expect('SourceMap', /vendors\.css\.map/)
+                .expect(loadFixture('vendors.css'))
+                .end(done)
 
-        it 'loads as good a sourcemap as possible', (done)->
-            request(app)
-            .get('/vendors.css.map')
-            .expect(200)
-            .expect(loadFixture('vendors.css.map'))
-            .end(done)
+            it 'loads as good a sourcemap as possible', (done)->
+                request(app)
+                .get('/vendors.css.map')
+                .expect(200)
+                .expect(loadFixture('vendors.css.map'))
+                .end(done)
