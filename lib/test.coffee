@@ -65,6 +65,13 @@ describe "DS Asset Middleware", ->
 
         it.skip 'inserts into correct modules', ->
 
+        it 'generates source maps', (done)->
+            request(app)
+            .get('/templates.js.map')
+            .expect(200)
+            .expect(loadFixture('templates.js.map'))
+            .end(done)
+
     describe "App Styles", ->
         it 'renders Stylus with Nib', (done)->
             request(app)
