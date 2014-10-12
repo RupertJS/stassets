@@ -8,11 +8,36 @@ class StyleWatcher extends SourcemapWatcher
         @files = ["/#{@name}.css"]
         super()
 
-    pattern: -> super ["**/#{@name}.styl"]
+    pattern: ->
+        types = Object.keys(StyleWatcher.renderers)
+        super ["**/#{@name}.{#{types.join(',')}}"]
 
     type: -> "text/css"
 
     render: (code, path)->
+        extension = path.substr(path.lastIndexOf('.') + 1)
+        StyleWatcher.renderers[extension].call(this, code, path)
+
+    getVendorImports: ->
+        if @config.vendors?.stylus?
+            @config.vendors.stylus.map (_1)=>
+                @config.vendors.prefix + '/' + _1
+        else
+            []
+
+    getImports: ->
+        imports = @getVendorImports()
+        .concat(@config.root.map (_1)-> "#{_1}/stylus/definitions/variables")
+        .concat(@config.root.map (_1)-> "#{_1}/stylus/definitions/mixins")
+
+        imports = imports.filter (_1)->
+            if _1.indexOf '.css' is -1
+                _1 = "#{_1}.styl"
+            fs.existsSync _1
+        imports
+
+StyleWatcher.renderers =
+    styl: (code, path)->
         compiler = require('stylus')(code)
             .set('filename', @pathpart path)
             .use(nib())
@@ -35,23 +60,6 @@ class StyleWatcher extends SourcemapWatcher
             Q {content, sourceMap, path}
         catch err
             Q.reject err
-
-    getVendorImports: ->
-        if @config.vendors?.stylus?
-            @config.vendors.stylus.map (_1)=>
-                @config.vendors.prefix + '/' + _1
-        else
-            []
-
-    getImports: ->
-        imports = @getVendorImports()
-        .concat(@config.root.map (_1)-> "#{_1}/stylus/definitions/variables")
-        .concat(@config.root.map (_1)-> "#{_1}/stylus/definitions/mixins")
-
-        imports = imports.filter (_1)->
-            if _1.indexOf '.css' is -1
-                _1 = "#{_1}.styl"
-            fs.existsSync _1
-        imports
+    css: (code, path)-> throw new Error 'Not implemented'
 
 module.exports = StyleWatcher
