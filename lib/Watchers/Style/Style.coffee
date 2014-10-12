@@ -1,5 +1,6 @@
 fs = require 'graceful-fs'
 SourcemapWatcher = require '../Sourcemap'
+Generator = require('source-map').SourceMapGenerator
 Q = require 'q'
 nib = require 'nib'
 
@@ -60,6 +61,22 @@ StyleWatcher.renderers =
             Q {content, sourceMap, path}
         catch err
             Q.reject err
-    css: (code, path)-> throw new Error 'Not implemented'
+
+    css: (content, path)->
+        defer = Q.defer()
+        source = file = @pathpart path
+
+        generator = new Generator({file})
+
+        original = {line: 1, column: 0}
+        generated = {line: 1, column: 0}
+        mapping = {generated, original, source}
+        generator.addMapping mapping
+
+        sourceMap = generator.toJSON()
+        sourceMap.sourcesContent = [content]
+
+        Q {content, sourceMap, path}
+
 
 module.exports = StyleWatcher
