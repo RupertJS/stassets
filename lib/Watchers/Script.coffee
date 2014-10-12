@@ -20,14 +20,11 @@ class ScriptWatcher extends SourcemapWatcher
             'controller'
             'directive'
         ].concat(@config.additionalTypes or [])
-        @config.typeList = @config.typeList or [
-            'js'
-            'coffee'
-        ].concat(@config.additionalTypeList or [])
         super()
 
     pattern: ->
-        prefix = (_)=> "**/#{_}.{#{@config.typeList.join(',')}}"
+        types = Object.keys(ScriptWatcher.renderers)
+        prefix = (_)=> "**/#{_}.{#{types.join(',')}}"
         typeList = @config.types.map(prefix)
         super typeList
 
