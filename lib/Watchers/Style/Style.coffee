@@ -63,7 +63,6 @@ StyleWatcher.renderers =
             Q.reject err
 
     css: (content, path)->
-        defer = Q.defer()
         source = file = @pathpart path
 
         generator = new Generator({file})
@@ -78,5 +77,29 @@ StyleWatcher.renderers =
 
         Q {content, sourceMap, path}
 
+    less: (code, path)->
+        defer = Q.defer()
+        file = @pathpart path
+        parser = new (require('less').Parser)
+
+        parser.parse code, (err, tree)->
+            return defer.reject err if err
+            content = ''
+            sourceMap = ''
+
+            writeSourceMap = (sourceMapContent)->
+                sourceMap = JSON.parse(sourceMapContent)
+
+            content = tree.toCSS({
+                sourceMap: yes
+                writeSourceMap
+            })
+
+            sourceMap.sources[0] = file
+            sourceMap.sourcesContent = [ content ]
+
+            defer.resolve { content, sourceMap, path }
+
+        defer.promise
 
 module.exports = StyleWatcher
