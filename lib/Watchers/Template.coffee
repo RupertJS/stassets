@@ -7,7 +7,10 @@ class TemplateWatcher extends SourcemapWatcher
         @files = ['/templates.js']
         super()
 
-    pattern: -> super ["**/template.jade"]
+    pattern: ->
+        types = Object.keys(TemplateWatcher.renderers)
+        super ["**/template.{#{types.join(',')}}"]
+
     getPaths: -> @files
 
     getShortPath: (path)->
@@ -35,9 +38,8 @@ class TemplateWatcher extends SourcemapWatcher
         .replace(/'/g, '\\\'')
 
     render: (code, path)->
-        options = filename: path
-        content = require('jade').render(code, options)
-        @wrap path, content, code
+        extension = path.substr(path.lastIndexOf('.') + 1)
+        TemplateWatcher.renderers[extension].call(this, code, path)
 
     wrap: (path, content, code)->
         shortPath = @getShortPath path
@@ -64,5 +66,13 @@ class TemplateWatcher extends SourcemapWatcher
 
     formatRenderError: (error)->
         error.toLocaleString()
+
+TemplateWatcher.renderers =
+    html: (code, path)->
+        @wrap path, code, code
+    jade: (code, path)->
+        options = filename: path
+        content = require('jade').render(code, options)
+        @wrap path, content, code
 
 module.exports = TemplateWatcher
