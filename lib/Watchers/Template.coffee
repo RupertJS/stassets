@@ -7,7 +7,10 @@ class TemplateWatcher extends SourcemapWatcher
         @files = ['/templates.js']
         super()
 
-    pattern: -> super ["**/template.jade"]
+    pattern: ->
+        types = Object.keys(TemplateWatcher.renderers)
+        super ["**/template.{#{types.join(',')}}"]
+
     getPaths: -> @files
 
     getShortPath: (path)->
@@ -25,19 +28,9 @@ class TemplateWatcher extends SourcemapWatcher
 
     getModuleRoot: -> @config.templateModuleRoot
 
-    stripNewlines: (content)->
-        content.replace(/\r?\n/g, '\\n\' +\n    \'')
-
-    # Normalize backslashes and strip newlines.
-    escapeContent: (content)->
-        @stripNewlines(content)
-        .replace(/\\/g, '\\\\')
-        .replace(/'/g, '\\\'')
-
     render: (code, path)->
-        options = filename: path
-        content = require('jade').render(code, options)
-        @wrap path, content, code
+        extension = path.substr(path.lastIndexOf('.') + 1)
+        TemplateWatcher.renderers[extension].call(this, code, path)
 
     wrap: (path, content, code)->
         shortPath = @getShortPath path
@@ -47,7 +40,7 @@ class TemplateWatcher extends SourcemapWatcher
         content = """
         angular.module('#{module}', [])
         .run(function($templateCache){
-            $templateCache.put('#{shortPath}', '#{@escapeContent(content)}');
+            $templateCache.put('#{shortPath}', '#{content}');
         });
         """
 
@@ -64,5 +57,27 @@ class TemplateWatcher extends SourcemapWatcher
 
     formatRenderError: (error)->
         error.toLocaleString()
+
+TemplateWatcher.renderers =
+    html: (code, path)->
+        content = code
+            .replace(/^\s+/g, '')
+            .replace(/\r?\n\s*/g, '')
+            .replace(/\\/g, '\\\\')
+            .replace(/'/g, '\\\'')
+        @wrap path, content, code
+    jade: (code, path)->
+        stripNewlines: (content)->
+            content.replace(/\r?\n/g, '\\n\' +\n    \'')
+
+        # Normalize backslashes and strip newlines.
+        escapeContent: (content)->
+            stripNewlines(content)
+            .replace(/\\/g, '\\\\')
+            .replace(/'/g, '\\\'')
+
+        options = filename: path
+        content = require('jade').render(code, options)
+        @wrap path, escapeContent(content), code
 
 module.exports = TemplateWatcher
