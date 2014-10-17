@@ -284,8 +284,9 @@ Required. String or Array<String>.
 ```
 
 ## Changelog
-* **0.2.15** *2014-10-06** Better reporting syntax errors.
-* **0.2.14** *2014-09-11** Documentation pass (13) & Bugfix (14).
+* **0.2.16** *2014-10-17* Less CSS compiler and vanilla HTML compiler.
+* **0.2.15** *2014-10-06* Better reporting syntax errors.
+* **0.2.14** *2014-09-11* Documentation pass (13) & Bugfix (14).
 * **0.2.12** *2014-09-07* [debug][https://www.npmjs.org/package/debug] for logs.
 * **0.2.11** *2014-09-05* Bug fixes. See commit log.
 * **0.2.7** *2014-08-20* Sourcemaps for Stylus files.
