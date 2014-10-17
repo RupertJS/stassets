@@ -67,11 +67,11 @@ TemplateWatcher.renderers =
             .replace(/'/g, '\\\'')
         @wrap path, content, code
     jade: (code, path)->
-        stripNewlines: (content)->
+        stripNewlines = (content)->
             content.replace(/\r?\n/g, '\\n\' +\n    \'')
 
         # Normalize backslashes and strip newlines.
-        escapeContent: (content)->
+        escapeContent = (content)->
             stripNewlines(content)
             .replace(/\\/g, '\\\\')
             .replace(/'/g, '\\\'')
