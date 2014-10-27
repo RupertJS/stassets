@@ -76,8 +76,10 @@ class VendorWatcher extends AssetWatcher
                     return sourceMap
             catch err
                 # @err err
-                undefined
-        return _
+        # Never returnd from techniques, this is the last ditch effort
+        @log "Generating sourceMap for #{path}"
+
+        return @buildSourcemap content, path
 
     render: (content, path)->
         sourceMap = @findSourceMap(content, path)
