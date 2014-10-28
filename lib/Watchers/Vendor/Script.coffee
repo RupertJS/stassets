@@ -19,8 +19,22 @@ class VendorScriptWatcher extends VendorWatcher
     buildSourcemap: (content, path)->
         source = file = @pathpart path
 
+        tokens = []
         generator = new Generator({file})
-        esprima.tokenize(content, {loc: yes}).forEach (token)->
+        try
+            tokens = esprima.tokenize(content, {loc: yes})
+        catch e
+            tokens = [
+                loc:
+                    start:
+                        line: 1
+                        column: 0
+                    end:
+                        line: content.split('\n').length
+                        column: 0
+            ]
+
+        tokens.forEach (token)->
             loc = token.loc.start
             original = {line: loc.line, column: loc.column}
             generated = {line: loc.line + 1, column: loc.column}
