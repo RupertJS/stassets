@@ -285,6 +285,7 @@ Required. String or Array<String>.
 
 ## Changelog
 
+* **0.2.20** *2012-10-28* Handle errors in generated sourcemaps.
 * **0.2.19** *2014-10-26* Generate SourceMaps for unsourcemapped vendors.
 * **0.2.18** *2014-10-17* Jade rendering issue.
 * **0.2.16, 17** *2014-10-17* Less CSS compiler and vanilla HTML compiler.
