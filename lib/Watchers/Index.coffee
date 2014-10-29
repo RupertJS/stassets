@@ -17,6 +17,6 @@ class IndexWatcher extends AssetBuilder
     type: -> "text/html; charset=utf-8"
 
     render: (_, filename)->
-        require('jade').render _, {filename}
+        require('jade').compile(_, {filename})(@config.configs)
 
 module.exports = IndexWatcher

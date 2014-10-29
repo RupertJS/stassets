@@ -17,6 +17,9 @@ app.use(stasset({
         jsMaps: [ 'angular/angular.min.js.map' ],
         css: [ 'bootstrap/dist/css/bootstrap.css' ],
         cssMaps: [ 'bootstrap/dist/css/bootstrap.css.map' ]
+    },
+    configs: {
+        API_KEY: "FOOBAR"
     }
 }));
 app.listen(8989);
