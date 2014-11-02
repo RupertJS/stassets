@@ -36,12 +36,11 @@ class TemplateWatcher extends SourcemapWatcher
         module = @getModuleName shortPath
         source = file = @pathpart path
 
-        content = """
-        angular.module('#{module}', [])
-        .run(function($templateCache){
-            $templateCache.put('#{shortPath}', '#{content}');
-        });
-        """
+        content =
+            "angular.module('#{module}', [])" +
+            ".run(function($templateCache){" +
+            "$templateCache.put('#{shortPath}', '#{content}');" +
+            "});"
 
         generator = new SourceMapGenerator({file})
 
