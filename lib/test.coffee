@@ -7,34 +7,18 @@ shasum = require('shasum')
 
 app = express()
 
-middleware = stasset({
-    root: [
-        "#{__dirname}/../test/assets",
-        "#{__dirname}/../test/cascade"
-    ]
-    scripts:
-        types: [
-            'main', 'provider', 'filter', 'service', 'controller', 'directive'
-        ]
-    vendors:
-        prefix: __dirname + "/../node_modules"
-        js: [ 'angular-builds/angular.min.js' ]
-        jsMaps: [ 'angular/angular.min.js.map' ]
-        css: [ 'bootstrap/dist/css/bootstrap.css' ]
-        cssMaps: [ 'bootstrap/dist/css/bootstrap.css.map' ]
-    deeplink: yes
-    verbose: no
-})
+middleware = stasset(require("#{__dirname}/../test/server/config"))
 app.use middleware
 
 sum = (expected = '')->
     expectedSum = shasum(expected)
     (res)->
-        if DEBUG=1
+        if process.env.DEBUG
             try
-                expected.should.equal(res.text) if DEBUG=1
+                expected.should.equal(res.text)
             catch e
                 console.log e
+        expected.length.should.equal res.text.length, 'Lengths match.'
         expectedSum.should.equal(shasum(res.text or ''), 'Sums match.')
         false
 
@@ -54,7 +38,7 @@ checkMap = (fixture)->
         )
         false
 
-describe "DS Asset Middleware", ->
+describe "Sstassets Middleware", ->
     before (done)->
         # Let the watchers compile
         middleware.promise.fin done

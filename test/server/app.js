@@ -4,24 +4,5 @@ var stasset = require('../../lib/index')
 
 var app = express();
 
-app.use(stasset({
-    verbose: true,
-    root: [__dirname + "/../assets", __dirname + "/../cascade"],
-    scripts: {
-        types: [
-            'main', 'provider', 'filter', 'service', 'controller', 'directive'
-        ]
-    },
-    vendors: {
-        prefix: __dirname + "/../../node_modules",
-        js: [
-            'angular-builds/angular.min.js',
-            'angular-builds/angular-animate.min.js',
-            'moment/min/moment.min.js'
-        ],
-        jsMaps: [ 'angular/angular.min.js.map' ],
-        css: [ 'bootstrap/dist/css/bootstrap.css' ],
-        cssMaps: [ 'bootstrap/dist/css/bootstrap.css.map' ]
-    }
-}));
+app.use(stasset(require('./config')));
 app.listen(8989);
