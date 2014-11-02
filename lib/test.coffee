@@ -48,9 +48,10 @@ checkMap = (fixture)->
     (res)->
         mapSrc = res.text.substr(4)
         map = JSON.parse(mapSrc)
-        map.sections.length.should.equal
+        map.sections.length.should.equal(
             expected.sections.length,
             'Sourcemap sections match.'
+        )
         false
 
 describe "DS Asset Middleware", ->
