@@ -11,7 +11,7 @@ class StyleWatcher extends SourcemapWatcher
 
     pattern: ->
         types = Object.keys(StyleWatcher.renderers)
-        super ["**/#{@name}.{#{types.join(',')}}"]
+        super ["**/*#{@name}.{#{types.join(',')}}"]
 
     type: -> "text/css"
 

@@ -12,19 +12,13 @@ ngmin = require 'ngmin'
 class ScriptWatcher extends SourcemapWatcher
     constructor: (@config)->
         @files = ['/app.js', '/application.js']
-        @config.types = @config.types || [
-            'main'
-            'provider'
-            'filter'
-            'service'
-            'controller'
-            'directive'
-        ].concat(@config.additionalTypes or [])
+        @config.scripts or= {}
+        @config.scripts.types = @config.scripts.types || [ 'main' ]
         super()
 
     pattern: ->
         types = Object.keys(ScriptWatcher.renderers)
-        prefix = (_)=> "**/#{_}.{#{types.join(',')}}"
+        prefix = (_)-> "**/*#{_}.{#{types.join(',')}}"
         typeList = @config.types.map(prefix)
         super typeList
 
@@ -66,7 +60,7 @@ class ScriptWatcher extends SourcemapWatcher
 
     concat: (_)->
         res = super _ # {content, sourceMap}
-        res @minify res if @config.compressJS
+        res = @minify res if @config.scripts.compress
         Q res
 
 ScriptWatcher.renderers =

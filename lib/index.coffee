@@ -45,6 +45,7 @@ Stassets.DEFAULTS =
         css: [ '' ]
     livereload:
         port: 35729
+    configs: {}
 
 middleware = (config)->
     stassets = new Stassets(config)

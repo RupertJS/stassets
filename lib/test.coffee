@@ -19,6 +19,8 @@ middleware = stasset({
         cssMaps: [ 'bootstrap/dist/css/bootstrap.css.map' ]
     deeplink: yes
     verbose: no
+    configs:
+        API_KEY: 'FOOBAR'
 })
 app.use middleware
 

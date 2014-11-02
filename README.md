@@ -80,14 +80,6 @@ app.listen(8989);
 
 ## Recommended Layout
 
-Everything you know about project structure is wrong.
-
-You should not group your files by `controller`, `model`, and `template`.
-
-You should not let the computer and framework dictate backwards logic.
-
-You need to work logically.
-
 Group your code by component. It looks like this:
 
 ```
@@ -97,82 +89,80 @@ Group your code by component. It looks like this:
 ├── main
 │   ├── all.styl
 │   ├── footer
-│   │   ├── directive.coffee
-│   │   ├── template.jade
-│   │   └── test.coffee
+│   │   ├── footer-directive.coffee
+│   │   ├── footer-template.jade
+│   │   └── footer_test.coffee
 │   ├── login
-│   │   ├── all.styl
-│   │   ├── directive.coffee
-│   │   ├── template.jade
-│   │   └── test.coffee
+│   │   ├── login-all.styl
+│   │   ├── login-directive.coffee
+│   │   ├── login-template.jade
+│   │   └── login_test.coffee
 │   ├── main.coffee
 │   ├── nav
-│   │   ├── directive.coffee
-│   │   ├── template.jade
-│   │   └── test.coffee
-│   ├── print.styl
-│   ├── screen.styl
-│   └── test.coffee
+│   │   ├── nav-directive.coffee
+│   │   ├── nav-template.jade
+│   │   └── nav_test.coffee
+│   ├── main-print.styl
+│   ├── main-screen.styl
+│   └── main_test.coffee
 ├── scavenge
 │   ├── gradebook
-│   │   ├── directive.coffee
-│   │   ├── service.coffee
-│   │   ├── service.mock.coffee
-│   │   ├── service.test.coffee
-│   │   └── template.jade
+│   │   ├── gradebook-directive.coffee
+│   │   ├── gradebook-service.coffee
+│   │   ├── gradebook-service_mock.coffee
+│   │   ├── gradebook-service_test.coffee
+│   │   └── gradebook-template.jade
 │   ├── hunts
-│   │   ├── all.styl
-│   │   ├── directive.coffee
-│   │   ├── directive.test.coffee
+│   │   ├── hunts-all.styl
+│   │   ├── hunts-directive.coffee
+│   │   ├── hunts-directive_test.coffee
 │   │   ├── edit
-│   │   │   ├── directive.coffee
-│   │   │   ├── template.jade
-│   │   │   └── test.coffee
-│   │   ├── service.coffee
-│   │   ├── service.mock.coffee
-│   │   ├── service.test.coffee
-│   │   └── template.jade
+│   │   │   ├── hunts-edit-directive.coffee
+│   │   │   ├── hunts-edit-template.jade
+│   │   │   └── hunts-edit_test.coffee
+│   │   ├── hunts-service.coffee
+│   │   ├── hunts-service_mock.coffee
+│   │   ├── hunts-service_test.coffee
+│   │   └── hunts-template.jade
 │   ├── leaders
-│   │   ├── all.styl
-│   │   ├── directive.coffee
-│   │   ├── template.jade
-│   │   └── test.coffee
+│   │   ├── leaders-all.styl
+│   │   ├── leaders-directive.coffee
+│   │   ├── leaders-template.jade
+│   │   └── leaders_test.coffee
 │   ├── students
-│   │   ├── directive.coffee
-│   │   ├── screen.styl
-│   │   ├── service.coffee
-│   │   ├── template.jade
-│   │   └── test.coffee
+│   │   ├── students-directive.coffee
+│   │   ├── students-screen.styl
+│   │   ├── students-service.coffee
+│   │   ├── students-template.jade
+│   │   └── students_test.coffee
 │   └── submit
-│       ├── controller.coffee
-│       ├── controller.test.coffee
-│       ├── directive.coffee
-│       ├── directive.test.coffee
+│       ├── submit-controller.coffee
+│       ├── submit-controller_test.coffee
+│       ├── submit-directive.coffee
+│       ├── submit-directive_test.coffee
 │       ├── grading
-│       │   ├── controller.coffee
-│       │   ├── directive.coffee
-│       │   ├── screen.styl
-│       │   └── template.jade
-│       ├── screen.styl
-│       ├── service.coffee
-│       ├── service.mock.coffee
-│       ├── service.test.coffee
-│       └── template.jade
+│       │   ├── submit-grading-controller.coffee
+│       │   ├── submit-grading-directive.coffee
+│       │   ├── submit-grading-screen.styl
+│       │   └── submit-grading-template.jade
+│       ├── submit-screen.styl
+│       ├── submit-service.coffee
+│       ├── submit-service_mock.coffee
+│       ├── submit-service_test.coffee
+│       └── submit-template.jade
 ├── stylus
 │   └── definitions
 │       ├── mixins.styl
 │       └── variables.styl
-├── tools
-│   └── render.coffee
 └── util
     ├── fileInput
-    │   ├── directive.coffee
-    │   ├── service.coffee
-    │   └── test.coffee
+    │   ├── fileInput-directive.coffee
+    │   ├── fileInput-service.coffee
+    │   └── fileInput-test.coffee
     └── thsort
-        ├── directive.coffee
-        ├── screen.styl
-        └── template.jade
+        ├── thsort-directive.coffee
+        ├── thsort-screen.styl
+        └── thsort-template.jade
 ```
 
 This is the client (in browser, Angular) codebase for a medium sized project,
@@ -183,6 +173,10 @@ just crazy.
 
 Stassets understands this directory layout, but can be configured to any other
 layout.
+
+This is in line with [current best practices][ng-best] for AngularJS.
+
+[ng-best]: https://docs.google.com/document/d/1XXMvReO8-Awi1EZXAXS4PzDzdNvV6pGcuaF4Q9821Es/pub
 
 ## Cascading File System
 
@@ -201,42 +195,55 @@ until 1.0.
 
 ### `root`
 
-Required. String or Array<String>.
+Required. String or Array<String>. Specifies the cascading search order for
+watched files. Any file matching the same path in a later root directory will
+override any files at that path in a prior directory. Especially useful for
+creating themed systems.
+
 ```
 ./index.coffee:11:        @config.root = [@config.root] unless @config.root instanceof Array
 ```
 
 ### `livereload`
+
+Optional. Boolean `false` or Object. Configure a livereload server. If not
+present, uses [`tiny-lr`][tlr]'s default settings. If `false`, completely
+disable Live Reload. Otherwise, is passed as-is to `tiny-lr`'s constructor.
+
 ```
 ./index.coffee:28:        unless @config.livereload is no
 ./index.coffee:29:            @livereload = new LR @config.livereload
 ```
 
-#### `livereload.port`
+[tlr]: https://www.npmjs.org/package/tiny-lr
 
-### `deeplink`
-```
-./Watchers/Index.coffee:12:        if @config.deeplink
-```
+### `scripts`
 
-### `types`
-```
-./Watchers/Script.coffee:15:        @config.types = @config.types || [
-```
+Configure application script settings.
 
-### `additionalTypes`
+#### `types`
 
-### `typeList`
+Optional. Array<string> of script filename types. Files within the root folders
+that have a name matching `*{type}.{ScriptTypes}` will be loaded, in order
+defined in the array, to the `application.js` bundle. Type extensions are
+determined based on registered filetype handlers in
+`ScriptWatcher.renderers[handler]`. Default type list is `['main']`.
+
 ```
-./Watchers/Script.coffee:22:        ].concat(@config.additionalTypes or [])
-./Watchers/Script.coffee:23:        @config.typeList = @config.typeList or [
-./Watchers/Script.coffee:26:        ].concat(@config.additionalTypeList or [])
-./Watchers/Script.coffee:30:        prefix = (_)=> "**/#{_}.{#{@config.typeList.join(',')}}"
+./Watchers/Script.coffee:16:        @config.scripts.types = @config.scripts.types || [
 ```
 
-### `compressJS`
+#### `compress`
+
+Optional. Boolean to run bundled `application.js` through Uglify.
+
 ```
-./Watchers/Script.coffee:72:        res @minify res if @config.compressJS
+./Watchers/Script.coffee:63:        res @minify res if @config.scripts.compress
+```
+
+### `styles`
+
+```
 ./Watchers/Style/Style.coffee:40:        if @config.vendors?.stylus?
 ./Watchers/Style/Style.coffee:41:            @config.vendors.stylus.map (_1)=>
 ./Watchers/Style/Style.coffee:42:                @config.vendors.prefix + '/' + _1
@@ -244,9 +251,17 @@ Required. String or Array<String>.
 ./Watchers/Style/Style.coffee:49:        .concat(@config.root.map (_1)-> "#{_1}/stylus/definitions/mixins")
 ```
 
-### `templateModuleRoot`
+### `templates`
+
+Optional. Object configuring template rendering options.
+
+### `baseModule`
+
+Optional string. If present, will prefix all template module names with
+`baseModule`.
+
 ```
-./Watchers/Template.coffee:24:    getModuleRoot: -> @config.templateModuleRoot
+./Watchers/Template.coffee:26:    if moduleRoot = @config.templates.baseModule
 ```
 
 ### `vendors`
@@ -285,6 +300,7 @@ Required. String or Array<String>.
 
 ## Changelog
 
+* **0.2.21** *2012-11-01* Assets accept module prefix in file name.
 * **0.2.20** *2012-10-28* Handle errors in generated sourcemaps.
 * **0.2.19** *2014-10-26* Generate SourceMaps for unsourcemapped vendors.
 * **0.2.18** *2014-10-17* Jade rendering issue.
