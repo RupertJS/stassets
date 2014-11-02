@@ -35,7 +35,7 @@ sum = (expected = '')->
         false
 
 loadFixture = (fixture)->
-    sum(fs.readFileSync("#{__dirname}/../test/fixtures/#{fixture}"))
+    sum(fs.readFileSync("#{__dirname}/../test/fixtures/#{fixture}", 'utf-8'))
 
 describe "DS Asset Middleware", ->
     before (done)->
