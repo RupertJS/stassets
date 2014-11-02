@@ -30,12 +30,28 @@ app.use middleware
 sum = (expected = '')->
     expectedSum = shasum(expected)
     (res)->
-        expected.should.equal(res.text) if DEBUG=1
-        expectedSum.should.equal(shasum(res.text or ''))
+        if DEBUG=1
+            try
+                expected.should.equal(res.text) if DEBUG=1
+            catch e
+                console.log e
+        expectedSum.should.equal(shasum(res.text or ''), 'Sums match.')
         false
 
 loadFixture = (fixture)->
     sum(fs.readFileSync("#{__dirname}/../test/fixtures/#{fixture}", 'utf-8'))
+
+checkMap = (fixture)->
+    src = fs.readFileSync("#{__dirname}/../test/fixtures/#{fixture}", 'utf-8')
+    expected = JSON.parse(src.substr(4))
+
+    (res)->
+        mapSrc = res.text.substr(4)
+        map = JSON.parse(mapSrc)
+        map.sections.length.should.equal
+            expected.sections.length,
+            'Sourcemap sections match.'
+        false
 
 describe "DS Asset Middleware", ->
     before (done)->
@@ -99,7 +115,7 @@ describe "DS Asset Middleware", ->
             request(app)
             .get('/all.css.map')
             .expect(200)
-            .expect(loadFixture('all.css.map'))
+            .expect(checkMap('all.css.map'))
             .end(done)
 
     describe "Application", ->
@@ -126,7 +142,7 @@ describe "DS Asset Middleware", ->
             request(app)
             .get('/app.js.map')
             .expect(200)
-            .expect(loadFixture('application.js.map'))
+            .expect(checkMap('application.js.map'))
             .end(done)
 
     describe "Vendors", ->
@@ -161,5 +177,5 @@ describe "DS Asset Middleware", ->
                 request(app)
                 .get('/vendors.css.map')
                 .expect(200)
-                .expect(loadFixture('vendors.css.map'))
+                .expect(checkMap('vendors.css.map'))
                 .end(done)
