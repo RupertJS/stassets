@@ -17,7 +17,7 @@ class SourcemapWatcher extends AssetWatcher
     concat: (_)->
         content = _.map((f)->f.content).join '\n'
 
-        lastOffset = 0
+        lastOffset = 1
         sections = _
         .map (f)->
             offset = {line: lastOffset, column: 0}
