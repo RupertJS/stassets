@@ -19,11 +19,11 @@ class ScriptWatcher extends SourcemapWatcher
     pattern: ->
         types = Object.keys(ScriptWatcher.renderers)
         prefix = (_)-> "**/*#{_}.{#{types.join(',')}}"
-        typeList = @config.types.map(prefix)
+        typeList = @config.scripts.types.map(prefix)
         super typeList
 
     patternOrder: (path)->
-        p = @config.types
+        p = @config.scripts.types
         i = 0
         while i < p.length
             if path.indexOf("#{p[i]}.") > -1

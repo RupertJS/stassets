@@ -11,6 +11,10 @@ middleware = stasset({
         "#{__dirname}/../test/assets",
         "#{__dirname}/../test/cascade"
     ]
+    scripts:
+        types: [
+            'main', 'provider', 'filter', 'service', 'controller', 'directive'
+        ]
     vendors:
         prefix: __dirname + "/../node_modules"
         js: [ 'angular-builds/angular.min.js' ]
@@ -42,16 +46,7 @@ describe "DS Asset Middleware", ->
             .expect(loadFixture('index.html'))
             .end(done)
 
-        it 'injects fingerprints', ->
-
-        it 'deep links', (done)->
-            request(app)
-            .get('/deep/link')
-            .set('Accept', 'text/html')
-            .expect(200)
-            .expect('Content-Type', /html; charset=utf-8/)
-            .expect(loadFixture('index.html'))
-            .end(done)
+        it.skip 'injects fingerprints', ->
 
     describe "Templates", ->
         it 'renders jade to JS', (done)->

@@ -7,6 +7,11 @@ var app = express();
 app.use(stasset({
     verbose: true,
     root: [__dirname + "/../assets", __dirname + "/../cascade"],
+    scripts: {
+        types: [
+            'main', 'provider', 'filter', 'service', 'controller', 'directive'
+        ]
+    },
     vendors: {
         prefix: __dirname + "/../../node_modules",
         js: [
