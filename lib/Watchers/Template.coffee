@@ -4,12 +4,13 @@ SourceMapGenerator = require('source-map').SourceMapGenerator
 
 class TemplateWatcher extends SourcemapWatcher
     constructor: (@config)->
+        @config.templates or= {}
         @files = ['/templates.js']
         super()
 
     pattern: ->
         types = Object.keys(TemplateWatcher.renderers)
-        super ["**/template.{#{types.join(',')}}"]
+        super ["**/*template.{#{types.join(',')}}"]
 
     getPaths: -> @files
 
@@ -22,11 +23,9 @@ class TemplateWatcher extends SourcemapWatcher
 
     getModuleName: (shortPath)->
         module = shortPath.replace(/\//g, '.') + '.template'
-        if moduleRoot = @getModuleRoot()
+        if moduleRoot = @config.templates.baseModule
             module = "#{moduleRoot}.#{module}"
         module
-
-    getModuleRoot: -> @config.templateModuleRoot
 
     render: (code, path)->
         extension = path.substr(path.lastIndexOf('.') + 1)
