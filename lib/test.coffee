@@ -3,6 +3,7 @@ fs = require 'graceful-fs'
 request = require 'supertest'
 express = require 'express'
 stasset = require './index'
+shasum = require('shasum')
 
 app = express()
 
@@ -26,10 +27,14 @@ middleware = stasset({
 })
 app.use middleware
 
+sum = (expected = '')->
+    expectedSum = shasum(expected)
+    (res)->
+        expectedSum.should.equal(shasum(res.text or ''))
+        false
+
 loadFixture = (fixture)->
-    fs.readFileSync(
-        "#{__dirname}/../test/fixtures/#{fixture}"
-    ).toString('utf-8')
+    sum(fs.readFileSync("#{__dirname}/../test/fixtures/#{fixture}"))
 
 describe "DS Asset Middleware", ->
     before (done)->
