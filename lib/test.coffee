@@ -30,6 +30,7 @@ app.use middleware
 sum = (expected = '')->
     expectedSum = shasum(expected)
     (res)->
+        expected.should.equal(res.text) if DEBUG=1
         expectedSum.should.equal(shasum(res.text or ''))
         false
 
