@@ -3,35 +3,42 @@ fs = require 'graceful-fs'
 request = require 'supertest'
 express = require 'express'
 stasset = require './index'
+shasum = require('shasum')
 
 app = express()
 
-middleware = stasset({
-    root: [
-        "#{__dirname}/../test/assets",
-        "#{__dirname}/../test/cascade"
-    ]
-    scripts:
-        types: [
-            'main', 'provider', 'filter', 'service', 'controller', 'directive'
-        ]
-    vendors:
-        prefix: __dirname + "/../node_modules"
-        js: [ 'angular-builds/angular.min.js' ]
-        jsMaps: [ 'angular/angular.min.js.map' ]
-        css: [ 'bootstrap/dist/css/bootstrap.css' ]
-        cssMaps: [ 'bootstrap/dist/css/bootstrap.css.map' ]
-    deeplink: yes
-    verbose: no
-})
+middleware = stasset(require("#{__dirname}/../test/server/config"))
 app.use middleware
 
-loadFixture = (fixture)->
-    fs.readFileSync(
-        "#{__dirname}/../test/fixtures/#{fixture}"
-    ).toString('utf-8')
+sum = (expected = '')->
+    expectedSum = shasum(expected)
+    (res)->
+        if process.env.DEBUG
+            try
+                expected.should.equal(res.text)
+            catch e
+                console.log e
+        expected.length.should.equal res.text.length, 'Lengths match.'
+        expectedSum.should.equal(shasum(res.text or ''), 'Sums match.')
+        false
 
-describe "DS Asset Middleware", ->
+loadFixture = (fixture)->
+    sum(fs.readFileSync("#{__dirname}/../test/fixtures/#{fixture}", 'utf-8'))
+
+checkMap = (fixture)->
+    src = fs.readFileSync("#{__dirname}/../test/fixtures/#{fixture}", 'utf-8')
+    expected = JSON.parse(src.substr(4))
+
+    (res)->
+        mapSrc = res.text.substr(4)
+        map = JSON.parse(mapSrc)
+        map.sections.length.should.equal(
+            expected.sections.length,
+            'Sourcemap sections match.'
+        )
+        false
+
+describe "Stassets Middleware", ->
     before (done)->
         # Let the watchers compile
         middleware.promise.fin done
@@ -93,7 +100,7 @@ describe "DS Asset Middleware", ->
             request(app)
             .get('/all.css.map')
             .expect(200)
-            .expect(loadFixture('all.css.map'))
+            .expect(checkMap('all.css.map'))
             .end(done)
 
     describe "Application", ->
@@ -120,7 +127,7 @@ describe "DS Asset Middleware", ->
             request(app)
             .get('/app.js.map')
             .expect(200)
-            .expect(loadFixture('application.js.map'))
+            .expect(checkMap('application.js.map'))
             .end(done)
 
     describe "Vendors", ->
@@ -155,5 +162,5 @@ describe "DS Asset Middleware", ->
                 request(app)
                 .get('/vendors.css.map')
                 .expect(200)
-                .expect(loadFixture('vendors.css.map'))
+                .expect(checkMap('vendors.css.map'))
                 .end(done)

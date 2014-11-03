@@ -29,14 +29,16 @@
     "express": "^4.4.1",
     "graceful-fs": "^3.0.2",
     "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
     "grunt-mocha-test": "^0.11.0",
     "grunt-recurse": "^0.2.1",
     "grunt-release": "^0.7.0",
     "load-grunt-tasks": "^0.2.1",
+    "shasum": "^1.0.0",
     "supertest": "^0.13.0"
   },
   "scripts": {
-    "test": "grunt server"
+    "test": "./node_modules/.bin/grunt server"
   },
   "author": "David Souther <david.souther+stassets@gmail.com>",
   "license": "ISC"
