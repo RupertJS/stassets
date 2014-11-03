@@ -38,7 +38,7 @@ checkMap = (fixture)->
         )
         false
 
-describe "Sstassets Middleware", ->
+describe "Stassets Middleware", ->
     before (done)->
         # Let the watchers compile
         middleware.promise.fin done
