@@ -65,14 +65,13 @@ TemplateWatcher.renderers =
             .replace(/'/g, '\\\'')
         @wrap path, content, code
     jade: (code, path)->
-        stripNewlines = (content)->
-            content.replace(/\r?\n/g, '\\n\' +\n    \'')
-
-        # Normalize backslashes and strip newlines.
+        # Normalize backslashes and strip newlines.a
         escapeContent = (content)->
-            stripNewlines(content)
+            min = content
             .replace(/\\/g, '\\\\')
             .replace(/'/g, '\\\'')
+            .replace(/\r?\n/g, '\\n')
+            min
 
         options = filename: path
         content = require('jade').render(code, options)
