@@ -300,8 +300,9 @@ Optional string. If present, will prefix all template module names with
 
 ## Changelog
 
-* **0.2.21** *2012-11-01* Assets accept module prefix in file name.
-* **0.2.20** *2012-10-28* Handle errors in generated sourcemaps.
+* **0.3.4** *2014-11-10* Back on track with a sane build and changelog.
+* **0.2.21** *2014-11-01* Assets accept module prefix in file name.
+* **0.2.20** *2014-10-28* Handle errors in generated sourcemaps.
 * **0.2.19** *2014-10-26* Generate SourceMaps for unsourcemapped vendors.
 * **0.2.18** *2014-10-17* Jade rendering issue.
 * **0.2.16, 17** *2014-10-17* Less CSS compiler and vanilla HTML compiler.
