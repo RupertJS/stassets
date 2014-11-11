@@ -1,5 +1,6 @@
 should = require('chai').should()
 fs = require 'graceful-fs'
+read = fs.readFileSync
 request = require 'supertest'
 express = require 'express'
 stasset = require './index'
@@ -10,20 +11,18 @@ app = express()
 middleware = stasset(require("#{__dirname}/../test/server/config"))
 app.use middleware
 
-sum = (expected = '')->
+loadFixture = (fixture)->
+    expected = read("#{__dirname}/../test/fixtures/#{fixture}", 'utf-8')
     expectedSum = shasum(expected)
     (res)->
         if process.env.DEBUG
             try
-                expected.should.equal(res.text)
+                res.text.should.equal expected
             catch e
                 console.log e
-        expected.length.should.equal res.text.length, 'Lengths match.'
-        expectedSum.should.equal(shasum(res.text or ''), 'Sums match.')
+        res.text.length.should.equal expected.length, 'Lengths match.'
+        shasum(res.text or '').should.equal(expectedSum, 'Sums match.')
         false
-
-loadFixture = (fixture)->
-    sum(fs.readFileSync("#{__dirname}/../test/fixtures/#{fixture}", 'utf-8'))
 
 checkMap = (fixture)->
     src = fs.readFileSync("#{__dirname}/../test/fixtures/#{fixture}", 'utf-8')
