@@ -57,12 +57,11 @@ class AssetWatcher extends LogEmitter
         @gaze.on 'changed', (_)=> @compile()
         @gaze.on 'renamed', (n, o)=> @remove o ; @add n ; @compile()
 
-        @gaze.on 'all', (code, event)->
+        @gaze.on 'all', (code, event)=>
             @log {code, event}
 
     add: (filepath)->
-        # if fs.existsSync(filepath) and fs.statSync(filepath).isFile()
-            @filelist[filepath] = yes
+        @filelist[filepath] = yes
 
     remove: (filepath)->
         @filelist[filepath] = no
