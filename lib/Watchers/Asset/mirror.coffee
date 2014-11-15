@@ -17,7 +17,7 @@ eventMap =
     changed: 'changed'
 
 Pool = {}
-GetPool = (root, extensions, noGlob)->
+GetPool = (root)->
     root = Path.resolve process.cwd(), root
     root = './' if root is '' # Prevent enumerating fs root when run in cwd.
     try
@@ -37,18 +37,36 @@ class Mirror extends EventEmitter
         @warnings = {}
 
         @pool = []
-        @roots = if @config.noRoot is true then @pattern else @root
-        for file in @roots
-            try
-                @pool.push GetPool file
-            catch e
-                @handleError e
+        if @config.noRoot
+            # Need to load one and only one
+            for file in @pattern
+                do =>
+                    for dir in root
+                        try
+                            path = Path.normalize "#{dir}/#{file}"
+                            @pool.push GetPool path
+                            @log "Found #{path}"
+                            return
+                        catch e
+                            # Nothing
+                    throw new Error "Could not find file #{file}"
+        else
+            # Try to load them all
+            for file in @root
+                try
+                    @pool.push GetPool file
+                catch e
+                    @handleError e
         @gazeAt @pool
 
     gazeAt: (pool)->
         Q.all pool.map (pond)=>
             d = Q.defer()
-            pond.on 'ready', -> d.resolve()
+            if @config.noRoot
+                # Ready immediately
+                d.resolve()
+            else
+                pond.on 'ready', -> d.resolve()
             d.promise
         .then =>
             @emit 'ready'
@@ -92,6 +110,7 @@ class Mirror extends EventEmitter
             @warnings.ENOENT = yes
 
     toWatch: (filepath)=>
+        return true if @config.noRoot # Already found it
         @pattern.some (pattern)->
             if pattern instanceof RegExp
                 if pattern.test filepath
@@ -111,13 +130,15 @@ class Mirror extends EventEmitter
         cb = nb cb
         filelist = {}
         @pool.forEach (pond)=>
-            files = Object.keys(pond.dirRegistery).forEach (dirname)=>
+            Object.keys(pond.dirRegistery).forEach (dirname)=>
                 dir = pond.dirRegistery[dirname]
                 Object.keys(dir).forEach (file)=>
                     path = Path.join dirname, file
                     if @toWatch path
                         filelist[path] = true
-
+            Object.keys(pond.watched).forEach (path)=>
+                if @toWatch path
+                    filelist[path] = true
         cb null, filelist
 
 module.exports = Mirror

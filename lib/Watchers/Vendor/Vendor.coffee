@@ -26,11 +26,7 @@ class VendorWatcher extends AssetWatcher
         super()
 
     pattern: (patterns)->
-        fullist = []
-        for root in @config.vendors.prefix
-            for pattern in patterns
-                fullist.push Path.normalize "#{root}/#{pattern}"
-        fullist
+        patterns
 
     findSourceMap: (content, path)->
         techniques =
@@ -102,10 +98,6 @@ class VendorWatcher extends AssetWatcher
     getFilenames: ->
         Object
             .keys(@filelist)
-            .filter (filename)=>
-                # Check that the filename is the end of at least one file
-                # in the pattern.
-                filename in @pattern().map (_)-> _.substr(-filename.length)
             .sort (a, b)=>
                 @vendorOrder(a) - @vendorOrder(b)
 
