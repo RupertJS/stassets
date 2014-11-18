@@ -300,6 +300,7 @@ Optional string. If present, will prefix all template module names with
 
 ## Changelog
 
+* **0.3.5** *2014-11-17* Only emit one error, when a vendor file is unavailable.
 * **0.3.4** *2014-11-10* Back on track with a sane build and changelog.
 * **0.2.21** *2014-11-01* Assets accept module prefix in file name.
 * **0.2.20** *2014-10-28* Handle errors in generated sourcemaps.
