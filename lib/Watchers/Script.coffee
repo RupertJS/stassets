@@ -18,6 +18,7 @@ class ScriptWatcher extends SourcemapWatcher
 
     pattern: ->
         types = Object.keys(ScriptWatcher.renderers)
+        @log types
         prefix = (_)-> "**/*#{_}.{#{types.join(',')}}"
         typeList = @config.scripts.types.map(prefix)
         super typeList

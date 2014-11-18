@@ -89,16 +89,7 @@ class VendorWatcher extends AssetWatcher
         content = content.replace R_SOURCE_MAP_COMMENT, ''
         Q { content, sourceMap, path }
 
-    vendorOrder: (path)->
-        order = Number.MAX_VALUE
-        @pattern().forEach (pattern, i)->
-            order = i if minimatch path, pattern
-        order
-
     getFilenames: ->
-        Object
-            .keys(@filelist)
-            .sort (a, b)=>
-                @vendorOrder(a) - @vendorOrder(b)
+        Object.keys(@filelist)
 
 module.exports = VendorWatcher
