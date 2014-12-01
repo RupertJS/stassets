@@ -15,11 +15,12 @@ class TemplateWatcher extends SourcemapWatcher
     getPaths: -> @files
 
     getShortPath: (path)->
+        types = Object.keys(TemplateWatcher.renderers)
         @pathpart(path)
         .substr(1)
-        .replace('.jade', '')
+        .replace(///\.(?:#{types.join('|')})$///, '')
         .replace(/\\/g, '/') # Normalize pathing.
-        .replace('/template', '')
+        .replace(/\/(?:[^\/]+-)?template$/, '')
 
     getModuleName: (shortPath)->
         module = shortPath.replace(/\//g, '.') + '.template'
@@ -29,7 +30,8 @@ class TemplateWatcher extends SourcemapWatcher
 
     render: (code, path)->
         extension = path.substr(path.lastIndexOf('.') + 1)
-        TemplateWatcher.renderers[extension].call(this, code, path)
+        content = TemplateWatcher.renderers[extension].call(this, code, path)
+        @wrap(path, content, code)
 
     wrap: (path, content, code)->
         shortPath = @getShortPath path
@@ -63,7 +65,6 @@ TemplateWatcher.renderers =
             .replace(/\r?\n\s*/g, '')
             .replace(/\\/g, '\\\\')
             .replace(/'/g, '\\\'')
-        @wrap path, content, code
     jade: (code, path)->
         # Normalize backslashes and strip newlines.a
         escapeContent = (content)->
@@ -75,6 +76,6 @@ TemplateWatcher.renderers =
 
         options = filename: path
         content = require('jade').render(code, options)
-        @wrap path, escapeContent(content), code
+        escapeContent(content)
 
 module.exports = TemplateWatcher
