@@ -17,7 +17,7 @@ class SourcemapWatcher extends AssetWatcher
     concat: (_)->
         content = _.map((f)->f.content).join '\n'
 
-        lastOffset = 1
+        lastOffset = 0
         sections = _
         .map (f)->
             offset = {line: lastOffset, column: 0}
@@ -38,9 +38,14 @@ class SourcemapWatcher extends AssetWatcher
         @printSuccess()
         @content = _.content
         @hasMap = _.sourceMap?
-        @map = ')]}\n' + JSON.stringify _.sourceMap if @hasMap
+        if @hasMap
+          map = JSON.stringify _.sourceMap
+          prefix = SourcemapWatcher.XSSI_PREFIX
+          @map = prefix + map
         @_defer.resolve()
 
     failedRender: -> {content: '', sourceMap: null}
+
+SourcemapWatcher.XSSI_PREFIX = ')]}\'\n'
 
 module.exports = SourcemapWatcher

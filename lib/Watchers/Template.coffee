@@ -33,23 +33,37 @@ class TemplateWatcher extends SourcemapWatcher
         content = TemplateWatcher.renderers[extension].call(this, code, path)
         @wrap(path, content, code)
 
-    wrap: (path, content, code)->
+    wrap: (path, rendered, code)->
         shortPath = @getShortPath path
         module = @getModuleName shortPath
         source = file = @pathpart path
 
-        content =
-            "angular.module('#{module}', [])" +
-            ".run(function($templateCache){" +
-            "$templateCache.put('#{shortPath}', '#{content}');" +
-            "});"
+        pre =[
+            "angular.module(", "'", module, "'", ", ", "[]", ")",
+            ".run(function($templateCache){"
+            "$templateCache.put(", "'", shortPath, "'", ",", " '"
+        ]
+        post = [
+            "');", "});"
+        ]
 
         generator = new SourceMapGenerator({file})
-
-        generated = { line: 3, column: 24 + 4 + shortPath.length }
         original = { line: 1, column: 0 }
+        generated = { line: 1, column: 0 }
 
-        generator.addMapping { source, generated, original }
+        content = ''
+        addMap = (arr, isSource = no)->
+            for part in arr
+                content += part
+                generator.addMapping { source, generated, original }
+                generated.column += part.length
+                if isSource
+                    original.column += part.length
+
+        addMap(pre)
+        addMap([rendered], yes)
+        addMap(post)
+
         sourceMap = generator.toJSON()
         sourceMap.sourcesContent = [code]
 
