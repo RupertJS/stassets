@@ -11,6 +11,8 @@ ready to serve at a moment's notice. It watches your client directory structure,
 and performs the build steps in memory. When you ask for your files, they've
 already been compiled. Life is easy.
 
+To start using an express server with `stassets` already configured, you should use [Rupert](https://github.com/RupertJS/rupert#rupert).
+
 stassets also minimizes the number of files you will transfer - it breaks the
 project into
 
