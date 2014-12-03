@@ -1,1 +1,2 @@
-{"version":3,"file":"/print.css","sources":["/Users/southerd/devel/southerd/libraries/stassets/test/assets/main/print.styl"],"names":[],"mappings":"AAAA;AACI;AACA","sourcesContent":["body\n    width 8in\n    margin 0.25in\n"]}
+)]}'
+{"version":3,"file":"/print.css","sections":[{"map":{"version":3,"sources":["/main/print.styl"],"names":[],"mappings":"AAAA;EACI,OAAM,IAAN;EACA,QAAO,OAAP","file":"print.css","sourcesContent":["body\n    width 8in\n    margin 0.25in\n"]},"offset":{"line":0,"column":0}},{"map":{"version":3,"sources":["/main/login/print.css"],"names":[],"mappings":"AAAA","file":"/main/login/print.css","sourcesContent":["/** A vanilla print stylesheet. */\n\n#login {\n    background: blue;\n}\n"]},"offset":{"line":5,"column":0}}]}

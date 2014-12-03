@@ -15,11 +15,12 @@ class TemplateWatcher extends SourcemapWatcher
     getPaths: -> @files
 
     getShortPath: (path)->
+        types = Object.keys(TemplateWatcher.renderers)
         @pathpart(path)
         .substr(1)
-        .replace('.jade', '')
+        .replace(///\.(?:#{types.join('|')})$///, '')
         .replace(/\\/g, '/') # Normalize pathing.
-        .replace('/template', '')
+        .replace(/\/(?:[^\/]+-)?template$/, '')
 
     getModuleName: (shortPath)->
         module = shortPath.replace(/\//g, '.') + '.template'
@@ -29,25 +30,40 @@ class TemplateWatcher extends SourcemapWatcher
 
     render: (code, path)->
         extension = path.substr(path.lastIndexOf('.') + 1)
-        TemplateWatcher.renderers[extension].call(this, code, path)
+        content = TemplateWatcher.renderers[extension].call(this, code, path)
+        @wrap(path, content, code)
 
-    wrap: (path, content, code)->
+    wrap: (path, rendered, code)->
         shortPath = @getShortPath path
         module = @getModuleName shortPath
         source = file = @pathpart path
 
-        content =
-            "angular.module('#{module}', [])" +
-            ".run(function($templateCache){" +
-            "$templateCache.put('#{shortPath}', '#{content}');" +
-            "});"
+        pre =[
+            "angular.module(", "'", module, "'", ", ", "[]", ")",
+            ".run(function($templateCache){"
+            "$templateCache.put(", "'", shortPath, "'", ",", " '"
+        ]
+        post = [
+            "');", "});"
+        ]
 
         generator = new SourceMapGenerator({file})
-
-        generated = { line: 3, column: 24 + 4 + shortPath.length }
         original = { line: 1, column: 0 }
+        generated = { line: 1, column: 0 }
 
-        generator.addMapping { source, generated, original }
+        content = ''
+        addMap = (arr, isSource = no)->
+            for part in arr
+                content += part
+                generator.addMapping { source, generated, original }
+                generated.column += part.length
+                if isSource
+                    original.column += part.length
+
+        addMap(pre)
+        addMap([rendered], yes)
+        addMap(post)
+
         sourceMap = generator.toJSON()
         sourceMap.sourcesContent = [code]
 
@@ -63,7 +79,6 @@ TemplateWatcher.renderers =
             .replace(/\r?\n\s*/g, '')
             .replace(/\\/g, '\\\\')
             .replace(/'/g, '\\\'')
-        @wrap path, content, code
     jade: (code, path)->
         # Normalize backslashes and strip newlines.a
         escapeContent = (content)->
@@ -75,6 +90,6 @@ TemplateWatcher.renderers =
 
         options = filename: path
         content = require('jade').render(code, options)
-        @wrap path, escapeContent(content), code
+        escapeContent(content)
 
 module.exports = TemplateWatcher

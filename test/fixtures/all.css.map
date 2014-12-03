@@ -1,2 +1,2 @@
-)]}
-{"version":3,"file":"/all.css","sections":[{"map":{"version":3,"sources":["/main/nav/all.styl","node_modules/nib/lib/nib/border.styl"],"names":[],"mappings":"AACI;ECOA,QAAQ,kBAAR","file":"all.css","sourcesContent":[".nav\n    ._tab\n        border grey\n","\n/*\n * border: <color>\n * border: ...\n */\n\nborder(color, args...)\n  if color is a 'color'\n    border: 1px solid color args\n  else\n    border: arguments\n"]},"offset":{"line":0,"column":0}}]}
+)]}'
+{"version":3,"file":"/all.css","sections":[{"map":{"version":3,"sources":["/main/nav/all.styl","node_modules/nib/lib/nib/border.styl"],"names":[],"mappings":"AACI;ECMA,QAAQ,kBAAR","file":"all.css","sourcesContent":[".nav\n    ._tab\n        border grey\n","/*\n * border: <color>\n * border: ...\n */\n\nborder(color, args...)\n  if color is a 'color'\n    border: 1px solid color args\n  else\n    border: arguments\n"]},"offset":{"line":0,"column":0}}]}

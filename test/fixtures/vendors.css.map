@@ -1,2 +1,2 @@
-)]}
+)]}'
 {"version":3,"file":"/vendors.css","sections":[{"map":{"version":3,"sources":["lib.styl"],"names":[],"mappings":"AAAA;EACI,YAAW,WAAX","file":"lib.css","sourcesContent":["*\n    box-sizing border-box\n"]},"offset":{"line":0,"column":0}}]}
