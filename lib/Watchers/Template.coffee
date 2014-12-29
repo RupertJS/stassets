@@ -18,34 +18,18 @@ class TemplateWatcher extends SourcemapWatcher
     getShortPath: (path)->
         types = Object.keys(TemplateWatcher.renderers)
         @pathpart(path)
-        .substr(1)
+        .replace(/^\//, '')
         .replace(///\.(?:#{types.join('|')})$///, '')
         .replace(/\\/g, '/') # Normalize pathing.
         .replace(/\/(?:[^\/]+-)?template$/, '')
-
 
     render: (code, path)->
         extension = path.substr(path.lastIndexOf('.') + 1)
         content = TemplateWatcher.renderers[extension].call(this, code, path)
         @wrap(path, content, code)
 
-    getModuleName: (shortPath)->
-        module = shortPath.replace(/\//g, '.') + '.template'
-        if moduleRoot = @config.templates.baseModule
-            module = "#{moduleRoot}.#{module}"
-        module
     cache: (path)->
         shortPath = @getShortPath path
-        module = @getModuleName shortPath
-
-        pre =[
-            "angular.module(", "'", module, "'", ", ", "[]", ")",
-            ".run(function($templateCache){"
-            "$templateCache.put(", "'", shortPath, "'", ",", " '"
-        ]
-        post = [
-            "');", "});"
-        ]
 
         pre = [
             "Templates", "[", "'", shortPath, "'", "]", " ", "=", " ", "'"
