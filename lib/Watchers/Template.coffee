@@ -5,6 +5,7 @@ SourceMapGenerator = require('source-map').SourceMapGenerator
 class TemplateWatcher extends SourcemapWatcher
     constructor: (@config)->
         @config.templates or= {}
+        @config.templateGlobal or= "Templates"
         @files = ['/templates.js']
         super()
 
@@ -17,35 +18,32 @@ class TemplateWatcher extends SourcemapWatcher
     getShortPath: (path)->
         types = Object.keys(TemplateWatcher.renderers)
         @pathpart(path)
-        .substr(1)
+        .replace(/^\//, '')
         .replace(///\.(?:#{types.join('|')})$///, '')
         .replace(/\\/g, '/') # Normalize pathing.
         .replace(/\/(?:[^\/]+-)?template$/, '')
-
-    getModuleName: (shortPath)->
-        module = shortPath.replace(/\//g, '.') + '.template'
-        if moduleRoot = @config.templates.baseModule
-            module = "#{moduleRoot}.#{module}"
-        module
 
     render: (code, path)->
         extension = path.substr(path.lastIndexOf('.') + 1)
         content = TemplateWatcher.renderers[extension].call(this, code, path)
         @wrap(path, content, code)
 
-    wrap: (path, rendered, code)->
+    cache: (path)->
         shortPath = @getShortPath path
-        module = @getModuleName shortPath
-        source = file = @pathpart path
 
-        pre =[
-            "angular.module(", "'", module, "'", ", ", "[]", ")",
-            ".run(function($templateCache){"
-            "$templateCache.put(", "'", shortPath, "'", ",", " '"
+        pre = [
+            "Templates", "[", "'", shortPath, "'", "]", " ", "=", " ", "'"
         ]
         post = [
-            "');", "});"
+            "'", ";"
         ]
+
+        {pre, post}
+
+    wrap: (path, rendered, code)->
+        {pre, post} = @cache(path)
+
+        source = file = @pathpart path
 
         generator = new SourceMapGenerator({file})
         original = { line: 1, column: 0 }
@@ -71,6 +69,11 @@ class TemplateWatcher extends SourcemapWatcher
 
     formatRenderError: (error)->
         error.toLocaleString()
+
+    concat: (_)->
+        prefix = "window.#{@config.templateGlobal} = {};";
+        _.unshift {content: prefix, sourceMap: null}
+        super(_)
 
 TemplateWatcher.renderers =
     html: (code, path)->
