@@ -1,4 +1,3 @@
-fs = require 'graceful-fs'
 SourcemapWatcher = require './Sourcemap'
 SourceMapGenerator = require('source-map').SourceMapGenerator
 
