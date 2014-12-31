@@ -5,6 +5,7 @@ Loader = require './Loader'
 class AssetBuilder extends AssetWatcher
     constructor: ->
         super()
+        @meta = if @meta? then @meta else no
         @_defer = Q.defer()
         @promise = @_defer.promise
         @content = ""
@@ -30,7 +31,7 @@ class AssetBuilder extends AssetWatcher
     compile: ->
         filenames = @getFilenames()
 
-        readMap = filenames.map (_)=> (new Loader(_, @)).promise
+        readMap = filenames.map (_)=> (new Loader(_, @, @meta)).promise
 
         renderMap = readMap.map (_)=>
             d = Q.defer()

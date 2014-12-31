@@ -163,3 +163,30 @@ describe "Stassets Middleware", ->
                 .expect(200)
                 .expect(checkMap('vendors.css.map'))
                 .end(done)
+
+describe 'watchers', ->
+  AssetBuilder = require('./Watchers/Asset')
+  class StatWatcher extends AssetBuilder
+    constructor: ->
+      @config =
+        root: [ __dirname ]
+      @meta = yes
+
+      super()
+
+    pattern: ->
+      super [
+        "**/*.coffee"
+      ]
+
+    concat: (_)->
+      @content = JSON.stringify _
+
+  sw = null
+  beforeEach (done)->
+    sw = new StatWatcher
+    sw.promise.then done
+
+  it 'only returns fs.stat', ->
+    stats = JSON.parse sw.content
+    stats.length.should.equal 20
