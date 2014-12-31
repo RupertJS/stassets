@@ -165,28 +165,30 @@ describe "Stassets Middleware", ->
                 .end(done)
 
 describe 'watchers', ->
-  AssetBuilder = require('./Watchers/Asset')
-  class StatWatcher extends AssetBuilder
-    constructor: ->
-      @config =
-        root: [ __dirname ]
-      @meta = yes
+    AssetBuilder = require('./Watchers/Asset')
+    class StatWatcher extends AssetBuilder
+        constructor: ->
+            @config =
+                root: [ __dirname ]
+            @meta = yes
 
-      super()
+            super()
 
-    pattern: ->
-      super [
-        "**/*.coffee"
-      ]
+        pattern: ->
+            super [
+                "**/*.coffee"
+            ]
 
-    concat: (_)->
-      @content = JSON.stringify _
+        concat: (_)->
+            @content = JSON.stringify _
 
-  sw = null
-  beforeEach (done)->
-    sw = new StatWatcher
-    sw.promise.then done
+    it 'only returns fs.stat', (done)->
+        sw = new StatWatcher
+        sw.promise.then ->
+          stats = JSON.parse sw.content
+          stats.length.should.equal 21
+          done()
 
-  it 'only returns fs.stat', ->
-    stats = JSON.parse sw.content
-    stats.length.should.equal 20
+    it 'expose constructors', ->
+        stassets = require('./index')
+        Object.keys(stassets.Constructors).length.should.equal 8

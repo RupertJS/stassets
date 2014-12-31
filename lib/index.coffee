@@ -55,5 +55,6 @@ middleware = (config)->
     fn
 
 middleware.Stassets = Stassets
+middleware.Constructors = require('./constructors')
 
 module.exports = middleware
