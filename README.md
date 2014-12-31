@@ -302,7 +302,7 @@ Optional string. If present, will prefix all template module names with
 
 ## Changelog
 
-* **0.3.** ** `this.meta` to only pass [`fs.stats`][fs.stats] to render.
+* **0.3.8** *2014-12-30* `this.meta` to only pass [`fs.stats`][fs.stats] to render. Exposes Constructors.
 * **0.3.7** *2014-12-29* Template js injection is more generic.
 * **0.3.6** *2014-12-03* Streamline and improve sourcemap handling.
 * **0.3.5** *2014-11-17* Only emit one error, when a vendor file is unavailable.
