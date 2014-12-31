@@ -16,11 +16,14 @@ class TemplateWatcher extends SourcemapWatcher
 
     getShortPath: (path)->
         types = Object.keys(TemplateWatcher.renderers)
-        @pathpart(path)
+        short = @pathpart(path)
         .replace(/^\//, '')
         .replace(///\.(?:#{types.join('|')})$///, '')
         .replace(/\\/g, '/') # Normalize pathing.
-        .replace(/\/(?:[^\/]+-)?template$/, '')
+        .replace(/[\-\/]template$/, '')
+        pc = short.split('/')
+        if pc[pc.length - 1] is pc[pc.length - 2] then pc.pop()
+        pc.join('/')
 
     render: (code, path)->
         extension = path.substr(path.lastIndexOf('.') + 1)
