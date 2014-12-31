@@ -302,6 +302,7 @@ Optional string. If present, will prefix all template module names with
 
 ## Changelog
 
+* **0.3.** ** `this.meta` to only pass [`fs.stats`][fs.stats] to render.
 * **0.3.7** *2014-12-29* Template js injection is more generic.
 * **0.3.6** *2014-12-03* Streamline and improve sourcemap handling.
 * **0.3.5** *2014-11-17* Only emit one error, when a vendor file is unavailable.
@@ -324,3 +325,5 @@ for pure static server (also great for tests). *This is likely to move to
 grunt-stassets in the very near future!*
 * **0.1** *2014-06-12* Understands the basic project structure. Works great for
 rapid development.
+
+[fs.stats]: http://nodejs.org/api/fs.html#fs_class_fs_stats
