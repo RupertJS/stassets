@@ -1,0 +1,9 @@
+module.exports =
+    LogEmitter: require('./Watchers/Asset/LogEmitter')
+    Watcher: require('./Watchers/Asset/Watcher')
+    Builder: require('./Watchers/Asset/Builder')
+    Index: require('./Watchers/Index')
+    SourceMap: require('./Watchers/Sourcemap')
+    Script: require('./Watchers/Script')
+    Template: require('./Watchers/Template')
+    Style: require('./Watchers/Style/Style')
