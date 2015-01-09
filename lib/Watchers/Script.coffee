@@ -7,7 +7,6 @@ minimatch = require 'minimatch'
 
 esprima = require 'esprima'
 UglifyJS = require 'uglify-js'
-ngmin = require 'ngmin'
 
 class ScriptWatcher extends SourcemapWatcher
     constructor: (@config)->
