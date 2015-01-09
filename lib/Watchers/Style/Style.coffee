@@ -80,25 +80,20 @@ StyleWatcher.renderers =
     less: (code, path)->
         defer = Q.defer()
         file = @pathpart path
-        parser = new (require('less').Parser)
+        less = require('less')
 
-        parser.parse code, (err, tree)->
-            return defer.reject err if err
-            content = ''
-            sourceMap = ''
+        options =
+            filename: file
+            sourceMap: {}
 
-            writeSourceMap = (sourceMapContent)->
-                sourceMap = JSON.parse(sourceMapContent)
+        less.logger.addListener
+            debug: @log.bind @
+            info: @log.bind @
+            warn: @err.bind @
+            error: @err.bind @
 
-            content = tree.toCSS({
-                sourceMap: yes
-                writeSourceMap
-            })
-
-            sourceMap.sources[0] = file
-            sourceMap.sourcesContent = [ content ]
-
-            defer.resolve { content, sourceMap, path }
+        less.render(code, {}).then (output)->
+            defer.resolve { content: output.css, sourceMap: output.map, path }
 
         defer.promise
 
