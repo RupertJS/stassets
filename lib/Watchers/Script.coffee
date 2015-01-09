@@ -51,7 +51,6 @@ class ScriptWatcher extends SourcemapWatcher
         ScriptWatcher.renderers[extension].call(this, code, path)
 
     minify: ({content, sourceMap})->
-        content = ngmin.annotate content
         result = UglifyJS.minify content,
             fromString: true
             inSourceMap: sourceMap
