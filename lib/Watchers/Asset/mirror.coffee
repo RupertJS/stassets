@@ -21,7 +21,7 @@ GetPool = (root)->
     root = Path.resolve process.cwd(), root
     root = './' if root is '' # Prevent enumerating fs root when run in cwd.
     try
-        Pool[root] or= new Watch root
+        Pool[root] or= new Watch root, {}
     catch err
         err.root = root
         throw err
