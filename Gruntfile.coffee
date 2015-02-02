@@ -14,6 +14,7 @@ module.exports = (grunt)->
     testFiles = grunt.expandFileArg('lib/')
 
     grunt.Config =
+        release: {}
         mochaTest:
             server:
                 options:
