@@ -13,7 +13,7 @@ class LiveReload
             else
                 console.err err
             process.exit 1 if @options.failHard
-        @server.listen options.port, (err)=>
+        @server.listen @options.port, (err)=>
             # return grunt.fatal(err) if err
             console.log "Live reload server starting on port #{@options.port}."
 
