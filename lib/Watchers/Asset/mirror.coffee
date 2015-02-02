@@ -44,6 +44,7 @@ class Mirror extends EventEmitter
                     for dir in root
                         try
                             path = Path.normalize "#{dir}/#{file}"
+                            @log "Looking for #{path}"
                             @pool.push GetPool path
                             @log "Found #{path}"
                             return
