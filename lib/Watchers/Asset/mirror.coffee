@@ -41,7 +41,7 @@ class Mirror extends EventEmitter
             # Need to load one and only one
             for file in @pattern
                 do =>
-                    for dir in root
+                    for dir in @root
                         try
                             path = Path.normalize "#{dir}/#{file}"
                             @log "Looking for #{path}"

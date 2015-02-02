@@ -302,6 +302,7 @@ Optional string. If present, will prefix all template module names with
 
 ## Changelog
 
+* **0.3.12** *2015-02-02*  Fix what was sort of a bug but is apparent as definitely a bug in Coffeescript 1.9
 * **0.3.11** *2015-01-09* Bumped all outdated dependencies.
 * **0.3.10** *2015-01-09* Bumped `sane` dependency to 1.0.0 (should be more stable).
 * **0.3.9** *2014-12-31* `TemplateWatcher` has new improved & better naming algorithm.
