@@ -20,7 +20,6 @@ class TemplateWatcher extends SourcemapWatcher
         short = @pathpart(path)
         .replace(/^\//, '')
         .replace(///\.(?:#{types.join('|')})$///, '')
-        .replace(/\\/g, '/') # Normalize pathing.
         .replace(/[\-\/]template$/, '')
         pc = short.split('/')
         if pc[pc.length - 1] is pc[pc.length - 2] then pc.pop()
