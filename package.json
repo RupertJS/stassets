@@ -1,6 +1,6 @@
 {
   "name": "stassets",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "repository": "https://github.com/DavidSouther/stassets.git",
   "description": "Static compiling express middleware.",
   "main": "lib/index.js",
