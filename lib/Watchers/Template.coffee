@@ -1,5 +1,6 @@
 SourcemapWatcher = require './Sourcemap'
 SourceMapGenerator = require('source-map').SourceMapGenerator
+htmlMinifier = require('html-minifier')
 
 class TemplateWatcher extends SourcemapWatcher
     constructor: (@config)->
@@ -79,11 +80,12 @@ class TemplateWatcher extends SourcemapWatcher
 
 TemplateWatcher.renderers =
     html: (code, path)->
-        content = code
-            .replace(/^\s+/g, '')
-            .replace(/\r?\n\s*/g, '')
-            .replace(/\\/g, '\\\\')
-            .replace(/'/g, '\\\'')
+        content = htmlMinifier.minify(code, {
+          removeComments: true
+          collapseWhitespace: true
+        })
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, '\\\'')
     jade: (code, path)->
         # Normalize backslashes and strip newlines.a
         escapeContent = (content)->
