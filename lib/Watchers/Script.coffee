@@ -7,6 +7,7 @@ minimatch = require 'minimatch'
 
 esprima = require 'esprima'
 UglifyJS = require 'uglify-js'
+flatten = require 'flatten-source-map'
 
 class ScriptWatcher extends SourcemapWatcher
     constructor: (@config)->
@@ -51,11 +52,18 @@ class ScriptWatcher extends SourcemapWatcher
         ScriptWatcher.renderers[extension].call(this, code, path)
 
     minify: ({content, sourceMap})->
-        result = UglifyJS.minify content,
-            fromString: true
-            inSourceMap: sourceMap
-            outSourceMap: "app.js.map"
-        {content: result.code, sourceMap: result.map}
+        if typeof sourceMap isnt "undefined"
+            generatedMap = flatten(sourceMap)
+
+            result = UglifyJS.minify content,
+                fromString: true
+                inSourceMap: generatedMap
+                outSourceMap: "app.js.map"
+        else
+            result = UglifyJS.minify content,
+                fromString: true
+
+        {content: result.code, sourceMap: generatedMap || ""}
 
     concat: (_)->
         res = super _ # {content, sourceMap}
